@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NKAM — Précision. Aujourd'hui et Demain.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #BB0000;
+    --red-bright: #CC0000;
+    --black: #000000;
+    --gray-900: #080808;
+    --gray-800: #111111;
+    --gray-700: #1c1c1c;
+    --gray-400: #555;
+    --gray-200: #aaaaaa;
+    --white: #f2eeea;
+    --F: 'Bebas Neue', sans-serif;
+    --FB: 'DM Sans', sans-serif;
+    --FM: 'Space Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--FB);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+  a { text-decoration: none; }
+
+  /* CURSOR */
+  #cursor-dot {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--red); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+  }
+  #cursor-ring {
+    position: fixed; width: 34px; height: 34px;
+    border: 1.5px solid rgba(187,0,0,.5); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: all .14s ease;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 60px;
+    background: linear-gradient(to bottom, rgba(0,0,0,.96) 0%, rgba(0,0,0,0) 100%);
+    transition: background .3s;
+  }
+  nav.scrolled { background: rgba(0,0,0,.97); }
+
+  .nav-brand { display: flex; align-items: center; }
+  .nav-logo-img { height: 40px; mix-blend-mode: screen; filter: invert(1); }
+
+  .nav-links { display: flex; gap: 44px; list-style: none; }
+  .nav-links a {
+    font-family: var(--FM); font-size: 10px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gray-200);
+    position: relative; transition: color .2s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: var(--red);
+    transition: width .28s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh; display: grid;
+    grid-template-columns: 55% 45%;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(187,0,0,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(187,0,0,.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .hero-bg-glow {
+    position: absolute; top: -20%; right: 10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(187,0,0,.12) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 140px 60px 90px; position: relative; z-index: 2;
+  }
+
+  .eyebrow {
+    font-family: var(--FM); font-size: 10px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--red);
+    display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    opacity: 0; animation: fadeUp .7s ease .15s forwards;
+  }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--red); display: block; }
+
+  .hero-title {
+    font-family: var(--F);
+    font-size: clamp(68px, 7.5vw, 116px);
+    line-height: .88; letter-spacing: 1px; margin-bottom: 36px;
+    opacity: 0; animation: fadeUp .7s ease .3s forwards;
+  }
+  .hero-title .red { color: var(--red); }
+
+  .hero-desc {
+    font-size: 15px; line-height: 1.85; color: var(--gray-200);
+    max-width: 420px; margin-bottom: 52px;
+    opacity: 0; animation: fadeUp .7s ease .45s forwards;
+  }
+
+  .hero-cta { display: flex; gap: 16px; opacity: 0; animation: fadeUp .7s ease .6s forwards; }
+
+  .btn {
+    font-family: var(--FM); font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; cursor: none;
+    padding: 15px 30px; transition: all .2s; display: inline-block;
+  }
+  .btn-red {
+    background: var(--red); color: var(--white); border: 1.5px solid var(--red);
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+  .btn-red:hover { background: var(--red-bright); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(187,0,0,.35); }
+  .btn-ghost { color: var(--white); border: 1.5px solid rgba(255,255,255,.18); }
+  .btn-ghost:hover { border-color: var(--red); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 60px; z-index: 2;
+    font-family: var(--FM); font-size: 9px; letter-spacing: 3px;
+    color: var(--gray-400); text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeUp .7s ease 1s forwards;
+  }
+  .scroll-bar { width: 36px; height: 1px; background: var(--gray-400); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; transform:scaleX(1); } 50% { opacity:.3; transform:scaleX(.4); } }
+
+  .hero-right {
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 2;
+  }
+  .hero-logo-wrap { position: relative; opacity: 0; animation: fadeIn 1.4s ease .2s forwards; }
+  .hero-logo-wrap img { width: 380px; max-width: 85%; }
+  .logo-glow {
+    position: absolute; inset: -40px;
+    background: radial-gradient(ellipse, rgba(187,0,0,.25) 0%, transparent 65%);
+    z-index: -1; animation: logoGlow 3s ease-in-out infinite alternate;
+  }
+  @keyframes logoGlow { from { opacity:.6; } to { opacity:1; } }
+
+  .hero-number {
+    position: absolute; right: 40px; bottom: 40px; z-index: 2;
+    font-family: var(--FM); font-size: 10px; color: var(--gray-700); letter-spacing: 1px;
+  }
+
+  /* DIVIDER */
+  .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--red) 30%, var(--red) 70%, transparent); opacity: .2; }
+
+  /* COMMON SECTION */
+  .section-label {
+    font-family: var(--FM); font-size: 10px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--red);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  }
+  .section-label::after { content: ''; width: 40px; height: 1px; background: rgba(187,0,0,.4); display: block; }
+
+  .section-title {
+    font-family: var(--F);
+    font-size: clamp(44px, 5.5vw, 76px);
+    line-height: .92; letter-spacing: 1px; margin-bottom: 28px;
+  }
+  .section-title .red { color: var(--red); }
+
+  /* ABOUT */
+  #about {
+    background: var(--gray-900); padding: 120px 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+  }
+  .about-desc { font-size: 15px; line-height: 1.85; color: var(--gray-200); margin-bottom: 18px; }
+
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 44px; }
+  .stat { border-left: 2px solid var(--red); padding: 18px 20px; background: rgba(187,0,0,.04); }
+  .stat-n { font-family: var(--F); font-size: 48px; color: var(--red); line-height: 1; margin-bottom: 4px; }
+  .stat-l { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); }
+
+  .services-card {
+    background: var(--gray-800); border: 1px solid rgba(187,0,0,.12); padding: 44px;
+    position: relative; overflow: hidden;
+  }
+  .services-card::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(187,0,0,.14) 0%, transparent 70%);
+  }
+  .services-card-title {
+    font-family: var(--FM); font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gray-400); margin-bottom: 32px;
+  }
+  .service-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+    cursor: none; transition: padding-left .2s;
+  }
+  .service-row:last-child { border-bottom: none; }
+  .service-row:hover { padding-left: 10px; }
+  .service-name { font-size: 15px; font-weight: 400; display: flex; align-items: center; gap: 12px; }
+  .s-dot { width: 5px; height: 5px; background: var(--red); border-radius: 50%; flex-shrink: 0; }
+  .s-arrow { color: var(--gray-400); font-size: 16px; transition: transform .2s, color .2s; }
+  .service-row:hover .s-arrow { transform: translateX(4px); color: var(--red); }
+
+  /* PORTFOLIO */
+  #portfolio { background: var(--black); padding: 120px 60px; }
+  .portfolio-head {
+    display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 56px;
+  }
+  .portfolio-note { font-family: var(--FM); font-size: 10px; letter-spacing: 2px; color: var(--gray-400); max-width: 260px; line-height: 1.7; }
+
+  .port-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+  .pi-1 { grid-column: 1 / 8; }
+  .pi-2 { grid-column: 8 / 13; }
+  .pi-3 { grid-column: 1 / 5; }
+  .pi-4 { grid-column: 5 / 10; }
+  .pi-5 { grid-column: 10 / 13; }
+
+  .port-card {
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,.04);
+    overflow: hidden; position: relative; cursor: none;
+    transition: border-color .25s;
+  }
+  .port-card:hover { border-color: rgba(187,0,0,.3); }
+
+  .port-img {
+    height: 260px; position: relative; overflow: hidden;
+    background: var(--gray-700);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pi-1 .port-img { height: 340px; }
+  .pi-3 .port-img, .pi-5 .port-img { height: 220px; }
+
+  .port-img-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(187,0,0,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(187,0,0,.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .port-img svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .12; }
+
+  .port-hover {
+    position: absolute; inset: 0; background: rgba(187,0,0,.88);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 24px; opacity: 0; transition: opacity .28s ease; z-index: 2;
+  }
+  .port-card:hover .port-hover { opacity: 1; }
+  .ph-tag { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.65); margin-bottom: 6px; }
+  .ph-title { font-family: var(--F); font-size: 30px; letter-spacing: 1px; }
+
+  .port-info { padding: 18px 22px; }
+  .port-tag { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 5px; }
+  .port-title { font-size: 14px; font-weight: 400; color: var(--white); }
+
+  /* TEAM */
+  #team { background: var(--gray-900); padding: 120px 60px; }
+  .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 56px; }
+
+  .team-card { background: var(--gray-800); overflow: hidden; cursor: none; }
+  .team-photo {
+    height: 300px; background: var(--gray-700);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .team-photo-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(187,0,0,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(187,0,0,.04) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  .team-photo svg { width: 70px; height: 70px; opacity: .1; position: relative; z-index: 1; }
+  .corner-tl, .corner-br {
+    position: absolute; width: 36px; height: 36px;
+    border-color: var(--red); border-style: solid; border-width: 0;
+  }
+  .corner-tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+  .corner-br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+
+  .team-info { padding: 28px 28px 32px; border-top: 1px solid rgba(187,0,0,.2); }
+  .team-name { font-family: var(--F); font-size: 28px; letter-spacing: 1px; margin-bottom: 6px; }
+  .team-role { font-family: var(--FM); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+  .team-bio { font-size: 13px; line-height: 1.8; color: var(--gray-200); }
+  .team-social { display: flex; gap: 10px; margin-top: 20px; }
+  .team-social a {
+    width: 30px; height: 30px; border: 1px solid rgba(255,255,255,.12);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gray-400); font-size: 11px; font-family: var(--FM);
+    transition: all .2s; cursor: none;
+  }
+  .team-social a:hover { border-color: var(--red); color: var(--red); }
+
+  /* CONTACT */
+  #contact { background: var(--black); padding: 120px 60px; }
+  .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 60px; }
+
+  .contact-tagline { font-family: var(--F); font-size: clamp(36px, 4vw, 56px); line-height: .95; letter-spacing: 1px; margin-bottom: 28px; }
+  .contact-desc { font-size: 14px; line-height: 1.85; color: var(--gray-200); margin-bottom: 40px; }
+
+  .contact-detail { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 22px; }
+  .cd-icon {
+    width: 36px; height: 36px; border: 1px solid rgba(187,0,0,.3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red); font-size: 14px; flex-shrink: 0;
+  }
+  .cd-label { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 3px; }
+  .cd-value { font-size: 14px; color: var(--white); }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    font-family: var(--FM); font-size: 9px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gray-400); display: block; margin-bottom: 8px;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%; background: var(--gray-800); border: 1px solid rgba(255,255,255,.08);
+    color: var(--white); font-family: var(--FB); font-size: 14px; font-weight: 300;
+    padding: 13px 16px; outline: none; transition: border-color .2s; cursor: none; appearance: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--red); }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: var(--gray-400); }
+  .form-group textarea { height: 120px; resize: vertical; }
+  .form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23BB0000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+  }
+  .form-group select option { background: var(--gray-800); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .form-submit {
+    width: 100%; margin-top: 6px;
+    font-family: var(--FM); font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--white); background: var(--red);
+    border: none; padding: 18px; cursor: none; transition: all .2s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+  .form-submit:hover { background: var(--red-bright); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(187,0,0,.3); }
+  .form-note { font-family: var(--FM); font-size: 9px; letter-spacing: 1.5px; color: var(--gray-400); margin-top: 12px; text-align: center; }
+
+  /* FOOTER */
+  footer {
+    background: var(--gray-900); border-top: 1px solid rgba(187,0,0,.15);
+    padding: 44px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo img { height: 34px; mix-blend-mode: screen; filter: invert(1); }
+  .footer-text { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); transition: color .2s; cursor: none; }
+  .footer-links a:hover { color: var(--red); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .32s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 120px 24px 80px; }
+    #about { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+    #portfolio { padding: 80px 24px; }
+    .pi-1,.pi-2,.pi-3,.pi-4,.pi-5 { grid-column: 1 / -1; }
+    .portfolio-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    #team { padding: 80px 24px; }
+    .team-grid { grid-template-columns: 1fr; gap: 2px; }
+    #contact { padding: 80px 24px; }
+    .contact-wrap { grid-template-columns: 1fr; gap: 48px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 20px; text-align: center; padding: 36px 24px; }
+    body { cursor: auto; }
+    #cursor-dot, #cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-brand">
+    <img src="nkam-logo.png" alt="NKAM" class="nav-logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#team">Équipe</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-glow"></div>
+
+  <div class="hero-left">
+    <div class="eyebrow">Bureau d'ingénierie</div>
+    <h1 class="hero-title">
+      Précision<br><span class="red">Aujourd'hui</span><br>Et Demain
+    </h1>
+    <p class="hero-desc">
+      NKAM est un bureau d'ingénierie spécialisé en conception assistée par ordinateur et fabrication additive. Des solutions sur mesure, pensées pour durer.
+    </p>
+    <div class="hero-cta">
+      <a href="#portfolio" class="btn btn-red">Voir nos projets</a>
+      <a href="#contact" class="btn btn-ghost">Nous contacter</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-logo-wrap">
+      <div class="logo-glow"></div>
+      <img src="nkam-logo-dark.png" alt="NKAM">
+    </div>
+  </div>
+
+  <div class="hero-scroll"><span class="scroll-bar"></span>Défiler</div>
+  <div class="hero-number">01 / NKAM</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <div class="section-label reveal">À propos</div>
+    <h2 class="section-title reveal reveal-delay-1">Ingénierie<br>de <span class="red">précision</span></h2>
+    <p class="about-desc reveal reveal-delay-2">
+      NKAM est né d'une passion pour l'ingénierie et la fabrication de précision. En tant que bureau étudiant, nous combinons rigueur technique et approche innovante pour concevoir des pièces et des systèmes adaptés à vos besoins.
+    </p>
+    <p class="about-desc reveal reveal-delay-2">
+      Spécialisés en modélisation 3D et impression additive, nous accompagnons nos clients du concept à la pièce finale — qualité et fiabilité garanties à chaque étape.
+    </p>
+    <div class="about-stats">
+      <div class="stat reveal reveal-delay-1"><div class="stat-n">CAD</div><div class="stat-l">Conception 3D</div></div>
+      <div class="stat reveal reveal-delay-2"><div class="stat-n">FDM</div><div class="stat-l">Impression 3D</div></div>
+      <div class="stat reveal reveal-delay-1"><div class="stat-n">100%</div><div class="stat-l">Sur mesure</div></div>
+      <div class="stat reveal reveal-delay-2"><div class="stat-n">Fast</div><div class="stat-l">Prototypage rapide</div></div>
+    </div>
+  </div>
+
+  <div class="reveal reveal-delay-2">
+    <div class="services-card">
+      <div class="services-card-title">Nos services</div>
+      <div class="service-row"><span class="service-name"><span class="s-dot"></span>Modélisation CAO / CAD</span><span class="s-arrow">→</span></div>
+      <div class="service-row"><span class="service-name"><span class="s-dot"></span>Impression 3D (FDM / Résine)</span><span class="s-arrow">→</span></div>
+      <div class="service-row"><span class="service-name"><span class="s-dot"></span>Prototypage rapide</span><span class="s-arrow">→</span></div>
+      <div class="service-row"><span class="service-name"><span class="s-dot"></span>Analyse &amp; simulation</span><span class="s-arrow">→</span></div>
+      <div class="service-row"><span class="service-name"><span class="s-dot"></span>Reverse engineering</span><span class="s-arrow">→</span></div>
+      <div class="service-row"><span class="service-name"><span class="s-dot"></span>Consulting technique</span><span class="s-arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-head">
+    <div>
+      <div class="section-label reveal">Portfolio</div>
+      <h2 class="section-title reveal reveal-delay-1">Nos<br>réalisations</h2>
+    </div>
+    <p class="portfolio-note reveal reveal-delay-2">Chaque projet est une opportunité de repousser les limites du possible.</p>
+  </div>
+
+  <div class="port-grid">
+
+    <div class="port-card pi-1 reveal">
+      <div class="port-img">
+        <div class="port-img-grid"></div>
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <rect x="60" y="40" width="280" height="200" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <line x1="60" y1="40" x2="20" y2="10" stroke="#BB0000" stroke-width=".8" stroke-dasharray="4,4"/>
+          <line x1="340" y1="40" x2="380" y2="10" stroke="#BB0000" stroke-width=".8" stroke-dasharray="4,4"/>
+          <line x1="340" y1="240" x2="380" y2="270" stroke="#BB0000" stroke-width=".8" stroke-dasharray="4,4"/>
+          <line x1="60" y1="240" x2="20" y2="270" stroke="#BB0000" stroke-width=".8" stroke-dasharray="4,4"/>
+          <circle cx="200" cy="140" r="60" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <line x1="60" y1="140" x2="340" y2="140" stroke="#BB0000" stroke-width=".5" stroke-dasharray="6,6"/>
+          <line x1="200" y1="40" x2="200" y2="240" stroke="#BB0000" stroke-width=".5" stroke-dasharray="6,6"/>
+          <circle cx="200" cy="140" r="8" fill="#BB0000" opacity=".4"/>
+          <text x="150" y="18" fill="#BB0000" font-size="9" font-family="monospace">ISO 2768-m · NKAM</text>
+          <text x="310" y="268" fill="#BB0000" font-size="8" font-family="monospace">REV.A</text>
+        </svg>
+        <div class="port-hover">
+          <div class="ph-tag">CAD · SolidWorks</div>
+          <div class="ph-title">Boîtier mécanique</div>
+        </div>
+      </div>
+      <div class="port-info">
+        <span class="port-tag">CAD · Modélisation</span>
+        <div class="port-title">Boîtier mécanique industriel — conception multi-corps</div>
+      </div>
+    </div>
+
+    <div class="port-card pi-2 reveal reveal-delay-1">
+      <div class="port-img">
+        <div class="port-img-grid"></div>
+        <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="150,20 260,80 260,180 150,240 40,180 40,80" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <polygon points="150,60 220,100 220,160 150,200 80,160 80,100" fill="none" stroke="#BB0000" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="150" y1="20" x2="150" y2="60" stroke="#BB0000" stroke-width=".8"/>
+          <line x1="260" y1="80" x2="220" y2="100" stroke="#BB0000" stroke-width=".8"/>
+          <line x1="40" y1="80" x2="80" y2="100" stroke="#BB0000" stroke-width=".8"/>
+          <circle cx="150" cy="130" r="25" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+        </svg>
+        <div class="port-hover">
+          <div class="ph-tag">Impression 3D · FDM</div>
+          <div class="ph-title">Support structurel</div>
+        </div>
+      </div>
+      <div class="port-info">
+        <span class="port-tag">Impression 3D</span>
+        <div class="port-title">Support structurel en PLA renforcé</div>
+      </div>
+    </div>
+
+    <div class="port-card pi-3 reveal">
+      <div class="port-img">
+        <div class="port-img-grid"></div>
+        <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="120" cy="75" rx="90" ry="45" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <ellipse cx="120" cy="75" rx="90" ry="45" fill="none" stroke="#BB0000" stroke-width=".5" stroke-dasharray="4,4" transform="rotate(30 120 75)"/>
+          <line x1="30" y1="75" x2="30" y2="145" stroke="#BB0000" stroke-width=".8"/>
+          <line x1="210" y1="75" x2="210" y2="145" stroke="#BB0000" stroke-width=".8"/>
+          <ellipse cx="120" cy="145" rx="90" ry="45" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <ellipse cx="120" cy="145" rx="90" ry="45" fill="none" stroke="#BB0000" stroke-width=".5" stroke-dasharray="2,4"/>
+        </svg>
+        <div class="port-hover">
+          <div class="ph-tag">CAD · Fusion 360</div>
+          <div class="ph-title">Pièce tournée</div>
+        </div>
+      </div>
+      <div class="port-info">
+        <span class="port-tag">CAD</span>
+        <div class="port-title">Pièce rotative usinée</div>
+      </div>
+    </div>
+
+    <div class="port-card pi-4 reveal reveal-delay-1">
+      <div class="port-img">
+        <div class="port-img-grid"></div>
+        <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="40" width="100" height="160" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <rect x="180" y="70" width="100" height="100" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <line x1="140" y1="120" x2="180" y2="120" stroke="#BB0000" stroke-width="1" stroke-dasharray="4,3"/>
+          <line x1="40" y1="40" x2="15" y2="15" stroke="#BB0000" stroke-width=".7"/>
+          <line x1="140" y1="40" x2="165" y2="15" stroke="#BB0000" stroke-width=".7"/>
+          <text x="72" y="22" fill="#BB0000" font-size="9" font-family="monospace">A</text>
+          <text x="17" y="12" fill="#BB0000" font-size="9" font-family="monospace">B</text>
+          <circle cx="90" cy="120" r="18" fill="none" stroke="#BB0000" stroke-width="1" stroke-dasharray="3,3"/>
+          <circle cx="230" cy="120" r="14" fill="none" stroke="#BB0000" stroke-width="1" stroke-dasharray="3,3"/>
+        </svg>
+        <div class="port-hover">
+          <div class="ph-tag">Assemblage · CAD</div>
+          <div class="ph-title">Assemblage multi-pièces</div>
+        </div>
+      </div>
+      <div class="port-info">
+        <span class="port-tag">Assemblage</span>
+        <div class="port-title">Assemblage multi-composants</div>
+      </div>
+    </div>
+
+    <div class="port-card pi-5 reveal reveal-delay-2">
+      <div class="port-img">
+        <div class="port-img-grid"></div>
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 160 L40 60 L100 20 L160 60 L160 160 Z" fill="none" stroke="#BB0000" stroke-width="1.5"/>
+          <path d="M40 160 L15 140 L15 40 L75 0 L135 40" fill="none" stroke="#BB0000" stroke-width=".7" stroke-dasharray="4,4"/>
+          <line x1="15" y1="140" x2="40" y2="160" stroke="#BB0000" stroke-width=".7"/>
+          <circle cx="100" cy="100" r="22" fill="none" stroke="#BB0000" stroke-width="1.2"/>
+          <line x1="78" y1="100" x2="122" y2="100" stroke="#BB0000" stroke-width=".5"/>
+          <line x1="100" y1="78" x2="100" y2="122" stroke="#BB0000" stroke-width=".5"/>
+        </svg>
+        <div class="port-hover">
+          <div class="ph-tag">Prototype · FDM</div>
+          <div class="ph-title">Prototype fonctionnel</div>
+        </div>
+      </div>
+      <div class="port-info">
+        <span class="port-tag">Prototypage</span>
+        <div class="port-title">Prototype fonctionnel rapide</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-label reveal">L'équipe</div>
+  <h2 class="section-title reveal reveal-delay-1">Les esprits<br>derrière <span class="red">NKAM</span></h2>
+
+  <div class="team-grid">
+
+    <div class="team-card reveal">
+      <div class="team-photo">
+        <div class="team-photo-grid"></div>
+        <div class="corner-tl"></div>
+        <div class="corner-br"></div>
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="28" r="18" fill="none" stroke="#BB0000" stroke-width="2"/>
+          <path d="M10 72 Q40 52 70 72" fill="none" stroke="#BB0000" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Votre Nom</div>
+        <div class="team-role">Fondateur · Ingénieur CAD</div>
+        <div class="team-bio">Étudiant en ingénierie, spécialisé en conception 3D et fabrication additive. Passionné par la résolution de problèmes techniques complexes.</div>
+        <div class="team-social">
+          <a href="#" title="LinkedIn">in</a>
+          <a href="#" title="GitHub">gh</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-card reveal reveal-delay-1">
+      <div class="team-photo">
+        <div class="team-photo-grid"></div>
+        <div class="corner-tl"></div>
+        <div class="corner-br"></div>
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="28" r="18" fill="none" stroke="#BB0000" stroke-width="2"/>
+          <path d="M10 72 Q40 52 70 72" fill="none" stroke="#BB0000" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Membre 2</div>
+        <div class="team-role">Co-fondateur · Impression 3D</div>
+        <div class="team-bio">Expert en impression additive FDM et résine. Maîtrise des matériaux techniques et des paramètres d'impression pour des résultats optimaux.</div>
+        <div class="team-social">
+          <a href="#" title="LinkedIn">in</a>
+          <a href="#" title="GitHub">gh</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-card reveal reveal-delay-2">
+      <div class="team-photo">
+        <div class="team-photo-grid"></div>
+        <div class="corner-tl"></div>
+        <div class="corner-br"></div>
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="28" r="18" fill="none" stroke="#BB0000" stroke-width="2"/>
+          <path d="M10 72 Q40 52 70 72" fill="none" stroke="#BB0000" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Membre 3</div>
+        <div class="team-role">Ingénieur · Simulation</div>
+        <div class="team-bio">Spécialisé en analyse par éléments finis (FEA) et simulation de contraintes. Garantit la robustesse de chaque conception avant fabrication.</div>
+        <div class="team-social">
+          <a href="#" title="LinkedIn">in</a>
+          <a href="#" title="GitHub">gh</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal">Contact</div>
+  <div class="contact-wrap">
+
+    <div>
+      <h2 class="contact-tagline reveal reveal-delay-1">Parlons de<br>votre <span class="red">projet</span></h2>
+      <p class="contact-desc reveal reveal-delay-2">Vous avez une idée, un besoin de conception ou un projet de fabrication ? Décrivez-nous votre problème — nous trouverons la solution d'ingénierie adaptée.</p>
+      <div class="contact-detail reveal reveal-delay-1">
+        <div class="cd-icon">✉</div>
+        <div><div class="cd-label">Email</div><div class="cd-value">contact@nkam-engineering.com</div></div>
+      </div>
+      <div class="contact-detail reveal reveal-delay-2">
+        <div class="cd-icon">◎</div>
+        <div><div class="cd-label">Localisation</div><div class="cd-value">France</div></div>
+      </div>
+      <div class="contact-detail reveal reveal-delay-3">
+        <div class="cd-icon">◷</div>
+        <div><div class="cd-label">Délai de réponse</div><div class="cd-value">Sous 48h ouvrées</div></div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <div class="form-row">
+        <div class="form-group"><label>Prénom</label><input type="text" placeholder="Jean"></div>
+        <div class="form-group"><label>Nom</label><input type="text" placeholder="Dupont"></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="jean.dupont@exemple.com"></div>
+      <div class="form-group">
+        <label>Type de projet</label>
+        <select>
+          <option value="" disabled selected>Sélectionner...</option>
+          <option>Modélisation CAD / CAO</option>
+          <option>Impression 3D</option>
+          <option>Prototypage rapide</option>
+          <option>Analyse &amp; simulation</option>
+          <option>Reverse engineering</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Description du projet</label><textarea placeholder="Décrivez votre besoin, les contraintes dimensionnelles, les matériaux envisagés..."></textarea></div>
+      <button type="button" class="form-submit" onclick="handleSubmit(this)">Envoyer la demande →</button>
+      <p class="form-note">Réponse garantie sous 48h · Devis gratuit</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><img src="nkam-logo.png" alt="NKAM"></div>
+  <div class="footer-text">© 2025 NKAM — Tous droits réservés</div>
+  <div class="footer-links">
+    <a href="#about">À propos</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let mx = -200, my = -200, rx = -200, ry = -200;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function loop() {
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    rx += (mx - rx) * .14; ry += (my - ry) * .14;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Form
+  function handleSubmit(btn) {
+    btn.textContent = '✓ Message envoyé !';
+    btn.style.background = '#1a6e1a';
+    btn.style.clipPath = 'none';
+    setTimeout(() => {
+      btn.textContent = 'Envoyer la demande →';
+      btn.style.background = '';
+      btn.style.clipPath = '';
+    }, 3500);
+  }
+</script>
+</body>
+</html>
