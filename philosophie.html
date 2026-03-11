@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NKAM — Notre Philosophie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #BB0000; --red-bright: #CC0000;
+    --black: #000; --gray-900: #080808; --gray-800: #111;
+    --gray-700: #1c1c1c; --gray-400: #555; --gray-200: #aaa; --white: #f2eeea;
+    --F: 'Bebas Neue', sans-serif; --FB: 'DM Sans', sans-serif; --FM: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: var(--FB); font-weight: 300; overflow-x: hidden; cursor: none; }
+  a { text-decoration: none; }
+
+  #cursor-dot { position: fixed; width: 8px; height: 8px; background: var(--red); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+  #cursor-ring { position: fixed; width: 34px; height: 34px; border: 1.5px solid rgba(187,0,0,.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all .14s ease; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 22px 60px; background: rgba(0,0,0,.97); }
+  .nav-logo-img { height: 40px; }
+  .nav-links { display: flex; gap: 44px; list-style: none; }
+  .nav-links a { font-family: var(--FM); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gray-200); position: relative; transition: color .2s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--red); transition: width .28s ease; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--FM); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); cursor: none; transition: gap .2s; margin-bottom: 48px; }
+  .back-btn:hover { gap: 16px; }
+  .back-btn::before { content: '←'; font-size: 14px; }
+
+  /* HERO */
+  .philo-hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 140px 60px 80px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(187,0,0,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(187,0,0,.03) 1px, transparent 1px); background-size: 56px 56px; }
+  .hero-circle { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); width: 520px; height: 520px; z-index: 0; }
+  .hero-circle svg { width: 100%; height: 100%; }
+  .circle-ring { fill: none; stroke: rgba(187,0,0,.08); stroke-width: 1; animation: rotateRing 20s linear infinite; transform-origin: center; }
+  .circle-ring-2 { fill: none; stroke: rgba(187,0,0,.05); stroke-width: 1; animation: rotateRing 32s linear infinite reverse; transform-origin: center; }
+  @keyframes rotateRing { from{transform:rotate(0deg);}to{transform:rotate(360deg);} }
+
+  .philo-eyebrow { font-family: var(--FM); font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--red); display: flex; align-items: center; gap: 14px; margin-bottom: 24px; position: relative; z-index: 1; opacity: 0; animation: fadeUp .7s ease .1s forwards; }
+  .philo-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--red); display: block; }
+  .philo-title { font-family: var(--F); font-size: clamp(64px, 8vw, 120px); line-height: .88; letter-spacing: 1px; position: relative; z-index: 1; opacity: 0; animation: fadeUp .7s ease .25s forwards; }
+  .philo-title .red { color: var(--red); }
+  .philo-subtitle { font-size: 16px; line-height: 1.85; color: var(--gray-200); max-width: 560px; margin-top: 28px; position: relative; z-index: 1; opacity: 0; animation: fadeUp .7s ease .4s forwards; }
+  .hero-scroll { position: absolute; bottom: 40px; left: 60px; z-index: 2; font-family: var(--FM); font-size: 9px; letter-spacing: 3px; color: var(--gray-400); text-transform: uppercase; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp .7s ease .9s forwards; }
+  .scroll-bar { width: 36px; height: 1px; background: var(--gray-400); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scaleX(1);}50%{opacity:.3;transform:scaleX(.4);} }
+
+  /* PROCESS */
+  .process-section { padding: 120px 60px; background: var(--gray-900); position: relative; overflow: hidden; }
+  .section-label { font-family: var(--FM); font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--red); display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .section-label::after { content: ''; width: 40px; height: 1px; background: rgba(187,0,0,.4); display: block; }
+  .section-title { font-family: var(--F); font-size: clamp(44px, 5.5vw, 72px); line-height: .92; letter-spacing: 1px; margin-bottom: 72px; }
+  .section-title .red { color: var(--red); }
+
+  .timeline { position: relative; display: flex; flex-direction: column; gap: 0; padding-left: 80px; }
+  .timeline::before { content: ''; position: absolute; left: 20px; top: 24px; bottom: 24px; width: 1px; background: linear-gradient(to bottom, var(--red), rgba(187,0,0,.1)); }
+
+  .timeline-item { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; padding: 48px 0; border-bottom: 1px solid rgba(255,255,255,.04); position: relative; opacity: 0; transform: translateX(-20px); transition: opacity .7s ease, transform .7s ease; }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-item::before { content: attr(data-num); position: absolute; left: -68px; top: 48px; width: 36px; height: 36px; background: var(--red); color: var(--white); font-family: var(--FM); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 0 0 4px var(--gray-900), 0 0 20px rgba(187,0,0,.4); }
+
+  .tl-tag { font-family: var(--FM); font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 14px; }
+  .tl-title { font-family: var(--F); font-size: clamp(32px, 3.5vw, 52px); line-height: .92; letter-spacing: 1px; margin-bottom: 20px; }
+  .tl-desc { font-size: 15px; line-height: 1.85; color: var(--gray-200); }
+  .tl-right { display: flex; align-items: center; justify-content: center; }
+
+  .tl-visual { width: 100%; max-width: 340px; aspect-ratio: 1; background: var(--gray-800); border: 1px solid rgba(187,0,0,.12); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .tl-visual canvas { width: 100%; height: 100%; display: block; }
+
+  /* PILIERS */
+  .piliers-section { padding: 120px 60px; background: var(--black); }
+  .piliers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 56px; }
+  .pilier-card { background: var(--gray-800); padding: 48px 36px; border-bottom: 2px solid transparent; transition: border-color .3s, background .3s; position: relative; overflow: hidden; }
+  .pilier-card:hover { border-color: var(--red); background: var(--gray-700); }
+  .pilier-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(187,0,0,.1) 0%, transparent 70%); opacity: 0; transition: opacity .3s; }
+  .pilier-card:hover::before { opacity: 1; }
+  .pilier-icon { margin-bottom: 28px; }
+  .pilier-icon svg { width: 48px; height: 48px; }
+  .pilier-num { font-family: var(--F); font-size: 72px; color: rgba(187,0,0,.1); line-height: 1; position: absolute; top: 20px; right: 28px; transition: color .3s; }
+  .pilier-card:hover .pilier-num { color: rgba(187,0,0,.2); }
+  .pilier-title { font-family: var(--F); font-size: 34px; letter-spacing: 1px; margin-bottom: 16px; line-height: .95; }
+  .pilier-title .red { color: var(--red); }
+  .pilier-desc { font-size: 14px; line-height: 1.8; color: var(--gray-200); }
+
+  /* CITATION */
+  .quote-section { padding: 100px 60px; background: var(--gray-900); text-align: center; position: relative; overflow: hidden; }
+  .quote-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(187,0,0,.08) 0%, transparent 65%); }
+  .quote-mark { font-family: var(--F); font-size: 160px; color: rgba(187,0,0,.08); line-height: .7; position: relative; z-index: 1; margin-bottom: -40px; }
+  .quote-text { font-family: var(--F); font-size: clamp(28px, 4vw, 52px); line-height: 1.1; letter-spacing: 1px; max-width: 800px; margin: 0 auto 28px; position: relative; z-index: 1; }
+  .quote-text .red { color: var(--red); }
+  .quote-author { font-family: var(--FM); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gray-400); position: relative; z-index: 1; }
+
+  /* CTA */
+  .cta-section { padding: 80px 60px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(187,0,0,.15); background: var(--black); }
+  .cta-title { font-family: var(--F); font-size: clamp(32px, 4vw, 52px); line-height: .95; margin-bottom: 10px; }
+  .cta-title .red { color: var(--red); }
+  .cta-sub { font-size: 14px; color: var(--gray-200); }
+  .btn { font-family: var(--FM); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: none; padding: 15px 30px; transition: all .2s; display: inline-block; }
+  .btn-red { background: var(--red); color: var(--white); border: 1.5px solid var(--red); clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%); }
+  .btn-red:hover { background: var(--red-bright); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(187,0,0,.3); }
+
+  footer { background: var(--gray-900); border-top: 1px solid rgba(187,0,0,.15); padding: 44px 60px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-logo img { height: 34px; }
+  .footer-text { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); transition: color .2s; cursor: none; }
+  .footer-links a:hover { color: var(--red); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .12s; }
+  .reveal-delay-2 { transition-delay: .24s; }
+  .reveal-delay-3 { transition-delay: .36s; }
+
+  /* Checklist animation (étape 4) */
+  .check-draw { stroke-dasharray: 200; stroke-dashoffset: 200; }
+
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; } .nav-links { display: none; }
+    .philo-hero { padding: 120px 24px 80px; } .hero-circle { display: none; }
+    .process-section, .piliers-section, .quote-section { padding: 80px 24px; }
+    .timeline { padding-left: 50px; }
+    .timeline-item { grid-template-columns: 1fr; gap: 32px; }
+    .timeline-item::before { left: -38px; }
+    .piliers-grid { grid-template-columns: 1fr; gap: 2px; }
+    .cta-section { flex-direction: column; gap: 32px; padding: 60px 24px; text-align: center; }
+    footer { flex-direction: column; gap: 20px; padding: 36px 24px; text-align: center; }
+    body { cursor: auto; } #cursor-dot, #cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="index.html"><img src="nkam-logo.png" alt="NKAM" class="nav-logo-img"></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">À propos</a></li>
+    <li><a href="index.html#portfolio">Portfolio</a></li>
+    <li><a href="index.html#team">Équipe</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="philo-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-circle">
+    <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
+      <circle class="circle-ring" cx="260" cy="260" r="200" stroke-dasharray="8,12"/>
+      <circle class="circle-ring-2" cx="260" cy="260" r="240" stroke-dasharray="4,16"/>
+      <circle cx="260" cy="260" r="160" fill="none" stroke="rgba(187,0,0,0.04)" stroke-width="1"/>
+      <circle cx="260" cy="260" r="4" fill="rgba(187,0,0,0.3)"/>
+      <circle cx="260" cy="260" r="60" fill="none" stroke="rgba(187,0,0,0.06)" stroke-width="1"/>
+      <line x1="260" y1="60" x2="260" y2="460" stroke="rgba(187,0,0,0.04)" stroke-width="1" stroke-dasharray="4,8"/>
+      <line x1="60" y1="260" x2="460" y2="260" stroke="rgba(187,0,0,0.04)" stroke-width="1" stroke-dasharray="4,8"/>
+      <g style="transform-origin:260px 260px;animation:rotateRing 20s linear infinite"><circle cx="460" cy="260" r="5" fill="#BB0000" opacity=".6"/></g>
+      <g style="transform-origin:260px 260px;animation:rotateRing 32s linear infinite reverse"><circle cx="260" cy="20" r="4" fill="rgba(187,0,0,0.5)"/></g>
+    </svg>
+  </div>
+  <a href="index.html" class="back-btn" style="position:relative;z-index:1;">Retour au site</a>
+  <div class="philo-eyebrow">Notre approche</div>
+  <h1 class="philo-title">La philosophie<br><span class="red">NKAM</span></h1>
+  <p class="philo-subtitle">Chaque projet est une équation entre ce qui est voulu, ce qui est possible, et ce qui dure. Notre méthode transforme cette complexité en solutions élégantes et fiables.</p>
+  <div class="hero-scroll"><span class="scroll-bar"></span>Découvrir</div>
+</section>
+
+<!-- PROCESS TIMELINE -->
+<section class="process-section">
+  <div class="section-label reveal">Notre processus</div>
+  <h2 class="section-title reveal reveal-delay-1">De l'idée<br>à la <span class="red">pièce</span></h2>
+
+  <div class="timeline">
+
+    <!-- 01 SIMPLICITÉ -->
+    <div class="timeline-item" data-num="01">
+      <div class="tl-left">
+        <div class="tl-tag">Principe fondateur</div>
+        <div class="tl-title">La simplicité<br>comme force</div>
+        <p class="tl-desc">Une conception simple n'est pas une conception paresseuse — c'est une conception mature. Chaque élément superflu est un point de défaillance potentiel. Chez NKAM, nous cherchons systématiquement à réduire la complexité sans sacrifier la fonction.<br><br>La fiabilité naît de la simplicité. Un mécanisme à trois pièces bien conçu surpasse toujours un système à dix pièces mal pensé.</p>
+      </div>
+      <div class="tl-right">
+        <div class="tl-visual">
+          <canvas id="c1" width="340" height="340"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 CRÉATIVITÉ -->
+    <div class="timeline-item" data-num="02">
+      <div class="tl-left">
+        <div class="tl-tag">Moteur d'innovation</div>
+        <div class="tl-title">La créativité<br>source d'innovation</div>
+        <p class="tl-desc">Les meilleures solutions techniques ne viennent pas de l'application mécanique des règles, mais de la capacité à voir un problème sous un angle neuf. Nous cultivons une pensée latérale — questionner les hypothèses, explorer l'inhabituel, trouver l'élégant là où d'autres ne voient que le fonctionnel.<br><br>L'innovation ne signifie pas "technologie pour la technologie" — elle signifie trouver une réponse que personne n'avait encore envisagée.</p>
+      </div>
+      <div class="tl-right">
+        <div class="tl-visual">
+          <canvas id="c2" width="340" height="340"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 COMPROMIS -->
+    <div class="timeline-item" data-num="03">
+      <div class="tl-left">
+        <div class="tl-tag">Art de l'ingénierie</div>
+        <div class="tl-title">Le meilleur<br>compromis</div>
+        <p class="tl-desc">Entre le cahier des charges idéal et l'utilisation réelle, il y a toujours un écart. Notre rôle est de trouver le point d'équilibre optimal — celui où les performances techniques rencontrent les contraintes de coût, de délai et d'usage.<br><br>Un bon ingénieur ne livre pas la solution parfaite sur le papier. Il livre la solution qui fonctionne réellement dans les mains de l'utilisateur.</p>
+      </div>
+      <div class="tl-right">
+        <div class="tl-visual">
+          <canvas id="c3" width="340" height="340"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 VALIDATION -->
+    <div class="timeline-item" data-num="04">
+      <div class="tl-left">
+        <div class="tl-tag">Rigueur & livraison</div>
+        <div class="tl-title">Tester,<br>valider, livrer</div>
+        <p class="tl-desc">Une conception n'existe vraiment que lorsqu'elle a été confrontée à la réalité. Chaque projet NKAM passe par une phase de validation rigoureuse — prototype physique, test de contraintes, vérification dimensionnelle — avant d'être considéré comme terminé.<br><br>Nous ne livrons pas des fichiers. Nous livrons des certitudes.</p>
+      </div>
+      <div class="tl-right">
+        <div class="tl-visual">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:75%;height:75%;position:relative;z-index:1;">
+            <rect x="40" y="30" width="120" height="140" fill="none" stroke="#BB0000" stroke-width="1.5" rx="2"/>
+            <line x1="40" y1="55" x2="160" y2="55" stroke="#BB0000" stroke-width="1" opacity=".3"/>
+            <line x1="75" y1="78" x2="140" y2="78" stroke="rgba(187,0,0,.4)" stroke-width="1"/>
+            <line x1="75" y1="108" x2="140" y2="108" stroke="rgba(187,0,0,.4)" stroke-width="1"/>
+            <line x1="75" y1="138" x2="130" y2="138" stroke="rgba(187,0,0,.4)" stroke-width="1"/>
+            <path class="check-draw" d="M55 72 L63 80 L78 65" fill="none" stroke="#BB0000" stroke-width="2.5" stroke-linecap="round"/>
+            <path class="check-draw" d="M55 102 L63 110 L78 95" fill="none" stroke="#BB0000" stroke-width="2.5" stroke-linecap="round"/>
+            <path class="check-draw" d="M55 132 L63 140 L78 125" fill="none" stroke="#BB0000" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="52" y="47" fill="#BB0000" font-size="7" font-family="monospace" opacity=".5">VALIDATION</text>
+            <text x="10" y="190" fill="#BB0000" font-size="6" font-family="monospace" opacity=".3">NKAM · PRINCIPE 04</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PILIERS -->
+<section class="piliers-section">
+  <div class="section-label reveal">Nos piliers</div>
+  <h2 class="section-title reveal reveal-delay-1">Ce en quoi<br>nous <span class="red">croyons</span></h2>
+  <div class="piliers-grid">
+    <div class="pilier-card reveal">
+      <div class="pilier-num">01</div>
+      <div class="pilier-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="20" stroke="#BB0000" stroke-width="1.5"/><circle cx="24" cy="24" r="8" stroke="#BB0000" stroke-width="1.5"/><line x1="4" y1="24" x2="16" y2="24" stroke="#BB0000" stroke-width="1"/><line x1="32" y1="24" x2="44" y2="24" stroke="#BB0000" stroke-width="1"/><line x1="24" y1="4" x2="24" y2="16" stroke="#BB0000" stroke-width="1"/><line x1="24" y1="32" x2="24" y2="44" stroke="#BB0000" stroke-width="1"/></svg></div>
+      <div class="pilier-title">Précision<br><span class="red">absolue</span></div>
+      <p class="pilier-desc">Chaque cote, chaque tolérance, chaque ajustement est le résultat d'un choix délibéré. Nous ne laissons rien au hasard.</p>
+    </div>
+    <div class="pilier-card reveal reveal-delay-1">
+      <div class="pilier-num">02</div>
+      <div class="pilier-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 4 L44 36 L4 36 Z" stroke="#BB0000" stroke-width="1.5" stroke-linejoin="round"/><path d="M24 16 L36 36 L12 36 Z" stroke="#BB0000" stroke-width="1" stroke-linejoin="round" stroke-dasharray="3,3"/></svg></div>
+      <div class="pilier-title">Pensée<br><span class="red">systémique</span></div>
+      <p class="pilier-desc">Une pièce n'existe jamais seule. Nous concevons en pensant à l'assemblage, à l'environnement et au cycle de vie complet du produit.</p>
+    </div>
+    <div class="pilier-card reveal reveal-delay-2">
+      <div class="pilier-num">03</div>
+      <div class="pilier-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="36" height="36" stroke="#BB0000" stroke-width="1.5" rx="2"/><path d="M6 20 Q20 14 24 24 Q28 34 42 28" stroke="#BB0000" stroke-width="1.5" fill="none"/><circle cx="24" cy="24" r="3" fill="#BB0000"/></svg></div>
+      <div class="pilier-title">Amélioration<br><span class="red">continue</span></div>
+      <p class="pilier-desc">Chaque projet est une occasion d'apprendre. Nous documentons nos erreurs autant que nos succès pour progresser à chaque itération.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CITATION -->
+<section class="quote-section">
+  <div class="quote-mark reveal">"</div>
+  <div class="quote-text reveal reveal-delay-1">La perfection est atteinte non pas quand il n'y a plus rien à ajouter, mais quand il n'y a plus rien à <span class="red">retirer</span>.</div>
+  <div class="quote-author reveal reveal-delay-2">Antoine de Saint-Exupéry · Philosophie adoptée par NKAM</div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div>
+    <div class="cta-title">Travaillons<br><span class="red">ensemble</span></div>
+    <div class="cta-sub">Un projet qui mérite cette rigueur ? Parlons-en.</div>
+  </div>
+  <a href="mailto:contact@nkam-engineering.com?subject=Demande de projet NKAM" class="btn btn-red">Nous contacter →</a>
+</section>
+
+<footer>
+  <div class="footer-logo"><img src="nkam-logo.png" alt="NKAM"></div>
+  <div class="footer-text">© 2025 NKAM — Tous droits réservés</div>
+  <div class="footer-links">
+    <a href="index.html#about">À propos</a>
+    <a href="index.html#portfolio">Portfolio</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx=-200,my=-200,rx=-200,ry=-200;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Timeline items
+const tlObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      e.target.querySelectorAll('.check-draw').forEach((el,i)=>{el.style.animation=`drawCheck 1s ease ${0.3+i*0.5}s forwards`;el.style.strokeDashoffset='200';});
+    }
+  });
+},{threshold:0.2});
+document.querySelectorAll('.timeline-item').forEach(el=>tlObs.observe(el));
+
+// Pilier hover
+document.querySelectorAll('.pilier-card').forEach(card=>{
+  card.addEventListener('mouseenter',()=>{ring.style.transform='translate(-50%,-50%) scale(1.8)';ring.style.borderColor='var(--red)';});
+  card.addEventListener('mouseleave',()=>{ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(187,0,0,.5)';});
+});
+
+// CSS animation for check
+const style=document.createElement('style');
+style.textContent='@keyframes drawCheck{to{stroke-dashoffset:0;}}';
+document.head.appendChild(style);
+
+// ── HELPERS ──
+const R='#BB0000', RF='rgba(187,0,0,0.05)', RD='rgba(187,0,0,0.15)';
+function lerp(a,b,t){return a+(b-a)*Math.min(Math.max(t,0),1);}
+function easeInOut(t){return t<0.5?2*t*t:-1+(4-2*t)*t;}
+function easeOut(t){return 1-Math.pow(1-t,3);}
+function grid(ctx,W,H){ctx.strokeStyle=RF;ctx.lineWidth=0.5;for(let x=0;x<W;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}}
+
+// ══════════════════════════════════════════════════
+// CANVAS 1 — SIMPLICITÉ
+// Réseau chaotique de nœuds qui se simplifie en triangle
+// ══════════════════════════════════════════════════
+(function(){
+  const cv=document.getElementById('c1');
+  if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  let t=0,active=false;
+
+  const cNodes=[
+    {x:75,y:75},{x:125,y:52},{x:185,y:70},{x:245,y:58},{x:210,y:115},
+    {x:160,y:135},{x:100,y:125},{x:58,y:148},{x:130,y:188},{x:200,y:175},
+    {x:258,y:155},{x:268,y:98},{x:82,y:218},{x:182,y:248},{x:252,y:238}
+  ];
+  const cEdges=[[0,1],[0,2],[0,5],[0,6],[1,2],[1,3],[2,3],[2,4],[2,5],[3,4],[3,11],[4,5],[4,10],[4,11],[5,6],[5,9],[6,7],[6,8],[7,8],[7,12],[8,9],[8,12],[8,13],[9,10],[9,13],[10,11],[10,14],[12,13],[13,14],[11,4]];
+  const sNodes=[{x:170,y:75},{x:75,y:248},{x:265,y:248},{x:170,y:188}];
+  const sEdges=[[0,1],[1,2],[2,0],[0,3],[1,3],[2,3]];
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    grid(ctx,W,H);
+    const cyc=7,ph=(t%cyc)/cyc;
+    // 0..0.3 complexe, 0.3..0.6 dissolution, 0.6..0.9 simple, 0.9..1 pause
+    const diss=easeInOut(Math.min(Math.max((ph-0.25)/0.35,0),1));
+    const simp=easeInOut(Math.min(Math.max((ph-0.3)/0.4,0),1));
+    const aC=diss<0.5?1:1-(diss-0.5)*2;
+    const aS=simp<0.2?0:Math.min((simp-0.2)/0.3,1);
+
+    // Nœuds complexes
+    if(aC>0.01){
+      ctx.globalAlpha=aC*0.3;
+      cEdges.forEach(([a,b])=>{ctx.strokeStyle=R;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(cNodes[a].x,cNodes[a].y);ctx.lineTo(cNodes[b].x,cNodes[b].y);ctx.stroke();});
+      cNodes.forEach((n,i)=>{
+        const r=3+Math.sin(t*2.5+i)*1;
+        ctx.fillStyle=R;
+        ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fill();
+      });
+      ctx.globalAlpha=1;
+    }
+
+    // Particules de dissolution
+    if(diss>0&&diss<1){
+      const a=diss*(1-diss)*4*0.7;
+      ctx.globalAlpha=a;
+      for(let i=0;i<24;i++){
+        const ang=(i/24)*Math.PI*2+t*0.8;
+        const rad=50+diss*100;
+        const px=W/2+Math.cos(ang)*rad,py=H/2+Math.sin(ang)*rad;
+        ctx.fillStyle=R;
+        ctx.beginPath();ctx.arc(px,py,1.5,0,Math.PI*2);ctx.fill();
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // Triangle simple
+    if(aS>0.01){
+      ctx.globalAlpha=aS;
+      sEdges.forEach(([a,b])=>{ctx.strokeStyle=R;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(sNodes[a].x,sNodes[a].y);ctx.lineTo(sNodes[b].x,sNodes[b].y);ctx.stroke();});
+      sNodes.forEach((n,i)=>{
+        const pulse=1+Math.sin(t*3+i)*0.12;
+        const glow=18*pulse;
+        ctx.fillStyle=`rgba(187,0,0,${0.12*aS})`;ctx.beginPath();ctx.arc(n.x,n.y,glow,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle=R;ctx.lineWidth=2;
+        if(i===3){ctx.fillStyle=R;ctx.beginPath();ctx.arc(n.x,n.y,8*pulse,0,Math.PI*2);ctx.fill();}
+        else{ctx.beginPath();ctx.arc(n.x,n.y,8*pulse,0,Math.PI*2);ctx.stroke();}
+      });
+      ctx.globalAlpha=1;
+    }
+
+    // Labels
+    ctx.font='10px Space Mono,monospace';
+    if(aC>0.4){ctx.globalAlpha=aC*0.55;ctx.fillStyle=R;ctx.fillText('COMPLEXE',10,H-28);ctx.fillText(cNodes.length+' nœuds · '+cEdges.length+' liens',10,H-14);}
+    if(aS>0.4){ctx.globalAlpha=aS*0.7;ctx.fillStyle=R;ctx.fillText('SIMPLIFIÉ',10,H-28);ctx.fillText(sNodes.length+' nœuds · '+sEdges.length+' liens',10,H-14);}
+    ctx.globalAlpha=1;
+    ctx.fillStyle=RD;ctx.font='8px Space Mono,monospace';ctx.fillText('NKAM · PRINCIPE 01',10,H-2);
+    t+=0.016;requestAnimationFrame(draw);
+  }
+
+  const io=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!active){active=true;draw();}},{threshold:0.3});
+  io.observe(cv);
+})();
+
+// ══════════════════════════════════════════════════
+// CANVAS 2 — CRÉATIVITÉ
+// Particules browniennes qui convergent vers une ampoule lumineuse
+// puis explosent en rayons d'idées
+// ══════════════════════════════════════════════════
+(function(){
+  const cv=document.getElementById('c2');
+  if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  let t=0,active=false;
+  const N=55;
+  const cx=W/2,cy=H/2-10;
+
+  const pts=Array.from({length:N},(_, i)=>({
+    x:cx+(Math.random()-.5)*260,y:cy+(Math.random()-.5)*260,
+    ang:Math.random()*Math.PI*2,spd:0.6+Math.random()*1.4,
+    sz:1.5+Math.random()*2,trail:[]
+  }));
+
+  function target(i){
+    // Forme ampoule : cercle + base
+    if(i<N*0.75){const a=(i/(N*0.75))*Math.PI*2;return{x:cx+Math.cos(a)*80,y:cy-10+Math.sin(a)*80};}
+    const fi=(i-N*0.75)/(N*0.25),bx=cx+(fi-.5)*50;
+    return{x:bx,y:cy+75+Math.sin(fi*Math.PI)*8};
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    grid(ctx,W,H);
+    const cyc=8,ph=(t%cyc)/cyc;
+    const conv=easeInOut(Math.min(Math.max((ph-.3)/.4,0),1));
+    const burst=easeOut(Math.min(Math.max((ph-.76)/.12,0),1));
+    const fade=Math.min(Math.max((ph-.88)/.12,0),1);
+
+    pts.forEach((p,i)=>{
+      const tg=target(i);
+      const chaos=1-conv;
+      p.ang+=(Math.random()-.5)*0.45*chaos;
+      p.x+=Math.cos(p.ang)*p.spd*chaos+(tg.x-p.x)*conv*0.09;
+      p.y+=Math.sin(p.ang)*p.spd*chaos+(tg.y-p.y)*conv*0.09;
+      if(burst>0){p.x=tg.x+Math.cos(p.ang+t)*burst*100;p.y=tg.y+Math.sin(p.ang+t)*burst*100;}
+      p.x=Math.max(8,Math.min(W-8,p.x));p.y=Math.max(8,Math.min(H-8,p.y));
+      p.trail.push({x:p.x,y:p.y});if(p.trail.length>10)p.trail.shift();
+
+      // Trail
+      for(let j=1;j<p.trail.length;j++){
+        const a=(j/p.trail.length)*0.35*(1-fade);
+        ctx.strokeStyle=`rgba(187,0,0,${a})`;ctx.lineWidth=p.sz*0.5;
+        ctx.beginPath();ctx.moveTo(p.trail[j-1].x,p.trail[j-1].y);ctx.lineTo(p.trail[j].x,p.trail[j].y);ctx.stroke();
+      }
+      // Particule
+      const ga=conv>0.4?0.3+conv*0.7:0.3;
+      ctx.fillStyle=`rgba(187,0,0,${ga*(1-fade)})`;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);ctx.fill();
+
+      // Glow lors convergence
+      if(conv>0.5&&burst<0.2){
+        ctx.fillStyle=`rgba(187,0,0,${conv*0.08})`;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.sz*5,0,Math.PI*2);ctx.fill();
+      }
+    });
+
+    // Rayons lors de l'explosion
+    if(burst>0.05&&burst<0.95){
+      const nb=12;
+      for(let i=0;i<nb;i++){
+        const a=(i/nb)*Math.PI*2+t*2;
+        const rr=burst*130;
+        ctx.strokeStyle=`rgba(187,0,0,${(1-burst)*0.9})`;ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.moveTo(cx,cy-10);ctx.lineTo(cx+Math.cos(a)*rr,cy-10+Math.sin(a)*rr);ctx.stroke();
+      }
+      // Cercle de flash
+      ctx.strokeStyle=`rgba(187,0,0,${(1-burst)*0.5})`;ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(cx,cy-10,burst*80,0,Math.PI*2);ctx.stroke();
+    }
+
+    // Label "IDÉE" au centre lors de la convergence
+    if(conv>0.65&&burst<0.4){
+      const a=Math.min((conv-.65)/.3,1)*(1-burst*2.5);
+      ctx.globalAlpha=Math.max(0,a);
+      ctx.fillStyle=R;ctx.font='bold 13px Space Mono,monospace';
+      ctx.textAlign='center';ctx.fillText('IDÉE',cx,cy+105);ctx.textAlign='left';
+      ctx.globalAlpha=1;
+    }
+
+    ctx.fillStyle=RD;ctx.font='8px Space Mono,monospace';ctx.fillText('NKAM · PRINCIPE 02',10,H-2);
+    t+=0.016;requestAnimationFrame(draw);
+  }
+
+  const io=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!active){active=true;draw();}},{threshold:0.3});
+  io.observe(cv);
+})();
+
+// ══════════════════════════════════════════════════
+// CANVAS 3 — COMPROMIS
+// Deux masses qui s'attirent / se repoussent
+// puis trouvent l'équilibre avec des ondes concentriques
+// ══════════════════════════════════════════════════
+(function(){
+  const cv=document.getElementById('c3');
+  if(!cv)return;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  let t=0,active=false;
+
+  function contours(cx,cy,maxR,a,n){
+    for(let i=1;i<=n;i++){
+      ctx.globalAlpha=a*(1-i/(n+1))*0.6;
+      ctx.strokeStyle=R;ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.arc(cx,cy,maxR*i/n,0,Math.PI*2);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    grid(ctx,W,H);
+    const cyc=9,ph=(t%cyc)/cyc;
+    // Phases
+    const showA=easeOut(Math.min(ph/.14,1));
+    const showB=easeOut(Math.min(Math.max((ph-.14)/.14,0),1));
+    const conv=easeInOut(Math.min(Math.max((ph-.45)/.38,0),1));
+    const bal=Math.min(Math.max((ph-.84)/.1,0),1);
+
+    const MX=W/2,MY=H/2;
+    const osc=Math.sin(t*3.5)*(1-conv)*28;
+    const ax=lerp(95,MX,conv)+osc;
+    const bx=lerp(245,MX,conv)-osc;
+    const ay=lerp(MY,MY,conv),by=lerp(MY,MY,conv);
+    const rA=lerp(72,0,conv*0.75),rB=lerp(72,0,conv*0.75);
+
+    // Ligne de tension
+    if(showA>0&&showB>0){
+      const tens=(1-conv)*Math.min(showA,showB);
+      ctx.globalAlpha=tens*0.45;ctx.strokeStyle=R;ctx.lineWidth=1;
+      ctx.setLineDash([5,8]);ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();ctx.setLineDash([]);
+      // Flèches antagonistes
+      const mid=(ax+bx)/2;
+      ctx.globalAlpha=tens*0.6;ctx.fillStyle=R;
+      // →
+      ctx.beginPath();ctx.moveTo(mid+22,MY);ctx.lineTo(mid+12,MY-5);ctx.lineTo(mid+12,MY+5);ctx.closePath();ctx.fill();
+      // ←
+      ctx.beginPath();ctx.moveTo(mid-22,MY);ctx.lineTo(mid-12,MY-5);ctx.lineTo(mid-12,MY+5);ctx.closePath();ctx.fill();
+      ctx.globalAlpha=1;
+    }
+
+    // Pôle A — CDC
+    if(showA>0&&rA>3){
+      contours(ax,ay,rA+20,showA*(1-conv*.8),4);
+      ctx.globalAlpha=showA*(1-conv*.75);
+      ctx.fillStyle=`rgba(187,0,0,0.12)`;ctx.beginPath();ctx.arc(ax,ay,22,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=R;ctx.beginPath();ctx.arc(ax,ay,8,0,Math.PI*2);ctx.fill();
+      ctx.font='10px Space Mono,monospace';ctx.fillStyle=R;ctx.textAlign='center';
+      ctx.fillText('CAHIER',ax,ay-90);ctx.fillText('DES CHARGES',ax,ay-76);
+      ctx.textAlign='left';ctx.globalAlpha=1;
+    }
+
+    // Pôle B — Usage
+    if(showB>0&&rB>3){
+      contours(bx,by,rB+20,showB*(1-conv*.8),4);
+      ctx.globalAlpha=showB*(1-conv*.75);
+      ctx.fillStyle=`rgba(187,0,0,0.09)`;ctx.beginPath();ctx.arc(bx,by,22,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=R;ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);ctx.fill();
+      ctx.font='10px Space Mono,monospace';ctx.fillStyle=R;ctx.textAlign='center';
+      ctx.fillText('USAGE',bx,by-90);ctx.fillText('RÉEL',bx,by-76);
+      ctx.textAlign='left';ctx.globalAlpha=1;
+    }
+
+    // Point d'équilibre + ondes
+    if(conv>0.25){
+      const a=(conv-.25)/.75;
+      const pulse=1+Math.sin(t*5)*0.1*bal;
+
+      // Ondes concentriques
+      for(let i=4;i>=1;i--){
+        const wr=38*i*pulse;
+        ctx.globalAlpha=a*(0.04+bal*0.06)/i;
+        ctx.fillStyle=R;ctx.beginPath();ctx.arc(MX,MY,wr,0,Math.PI*2);ctx.fill();
+      }
+      ctx.globalAlpha=a;
+      // Anneau externe
+      ctx.strokeStyle=R;ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(MX,MY,26*pulse,0,Math.PI*2);ctx.stroke();
+      // Point central
+      ctx.fillStyle=R;ctx.beginPath();ctx.arc(MX,MY,10*pulse,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;
+
+      // Label équilibre
+      if(a>0.5){
+        ctx.globalAlpha=(a-.5)*2;
+        ctx.fillStyle=R;ctx.font='bold 11px Space Mono,monospace';ctx.textAlign='center';
+        ctx.fillText('COMPROMIS',MX,MY-42);ctx.fillText('OPTIMAL',MX,MY-28);
+        ctx.textAlign='left';ctx.globalAlpha=1;
+      }
+    }
+
+    // Axe de compromis en bas
+    const barA=40,barW=W-80,barY=H-40;
+    ctx.globalAlpha=Math.min(showA,showB)*0.6;
+    ctx.strokeStyle=RD;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(barA,barY);ctx.lineTo(barA+barW,barY);ctx.stroke();
+    // Curseur animé
+    const optX=barA+barW*.5;
+    const cdcX=barA+barW*.18;
+    const useX=barA+barW*.82;
+    const curX=lerp(cdcX+(useX-cdcX)*.5+osc*.3,optX,conv);
+    ctx.fillStyle=R;ctx.beginPath();ctx.arc(curX,barY,5,0,Math.PI*2);ctx.fill();
+    ctx.font='8px Space Mono,monospace';ctx.fillStyle=R;
+    ctx.textAlign='center';ctx.fillText('CDC',cdcX,barY+14);ctx.fillText('USAGE',useX,barY+14);ctx.textAlign='left';
+    ctx.globalAlpha=1;
+
+    ctx.fillStyle=RD;ctx.font='8px Space Mono,monospace';ctx.fillText('NKAM · PRINCIPE 03',10,H-4);
+    t+=0.016;requestAnimationFrame(draw);
+  }
+
+  const io=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!active){active=true;draw();}},{threshold:0.3});
+  io.observe(cv);
+})();
+</script>
+</body>
+</html>
