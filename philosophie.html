@@ -702,6 +702,12 @@ function grid(ctx,W,H){ctx.strokeStyle=RF;ctx.lineWidth=0.5;for(let x=0;x<W;x+=2
   const io=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!active){active=true;draw();}},{threshold:0.3});
   io.observe(cv);
 })();
+
+
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobile-menu').classList.toggle('open');
+    }
 </script>
 </body>
 </html>
