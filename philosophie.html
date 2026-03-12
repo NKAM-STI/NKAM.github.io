@@ -136,6 +136,49 @@
     footer { flex-direction: column; gap: 20px; padding: 36px 24px; text-align: center; }
     body { cursor: auto; } #cursor-dot, #cursor-ring { display: none; }
   }
+  /* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 300;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.hamburger span {
+  width: 26px; height: 2px;
+  background: var(--red);
+  transition: all .3s ease;
+  display: block;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 250;
+  background: rgba(0,0,0,.97);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  gap: 40px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+  font-family: var(--F); font-size: 52px;
+  letter-spacing: 3px; color: var(--red);
+  transition: color .2s;
+}
+.mobile-menu a:hover { color: var(--white); }
+
+@media (max-width: 900px) {
+  .hamburger { display: flex; }
+}
+  
 </style>
 </head>
 <body>
