@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NKAM — Photonik & Optomechanik</title>
+<meta name="description" content="Beratung, Prototyping und Integration komplexer optischer Systeme. Von der tolerierten optomechanischen Konstruktion bis zur Fertigung photonischer MEMS-Komponenten.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #BB0000; --red-bright: #CC0000;
+    --black: #000; --gray-900: #080808; --gray-800: #111;
+    --gray-700: #1c1c1c; --gray-400: #555; --gray-200: #aaa; --white: #f2eeea;
+    --F: 'Bebas Neue', sans-serif; --FB: 'DM Sans', sans-serif; --FM: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: var(--FB); font-weight: 300; overflow-x: hidden; cursor: none; }
+  a { text-decoration: none; }
+  #cursor-dot { position: fixed; width: 8px; height: 8px; background: var(--red); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+  #cursor-ring { position: fixed; width: 34px; height: 34px; border: 1.5px solid rgba(187,0,0,.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all .14s ease; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 22px 60px; background: rgba(0,0,0,.97); }
+  .nav-logo-img { height: 40px; }
+  .nav-links { display: flex; gap: 44px; list-style: none; }
+  .nav-links a { font-family: var(--FM); font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gray-200); position: relative; transition: color .2s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--red); transition: width .28s ease; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .back-btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--FM); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); cursor: none; transition: gap .2s; margin-bottom: 44px; }
+  .back-btn:hover { gap: 16px; }
+  .back-btn::before { content: '←'; font-size: 14px; }
+
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 55% 45%; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(187,0,0,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(187,0,0,.03) 1px, transparent 1px); background-size: 56px 56px; }
+  .hero-glow { position: absolute; top: -10%; right: 5%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(187,0,0,.1) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+  .hero-left { display: flex; flex-direction: column; justify-content: flex-end; padding: 140px 60px 90px; position: relative; z-index: 2; }
+  .eyebrow { font-family: var(--FM); font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--red); display: flex; align-items: center; gap: 14px; margin-bottom: 24px; opacity: 0; animation: fadeUp .7s ease .1s forwards; }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--red); display: block; }
+  .hero-title { font-family: var(--F); font-size: clamp(60px, 7vw, 108px); line-height: .88; letter-spacing: 1px; margin-bottom: 32px; opacity: 0; animation: fadeUp .7s ease .25s forwards; }
+  .hero-title .red { color: var(--red); }
+  .hero-desc { font-size: 15px; line-height: 1.85; color: var(--gray-200); max-width: 440px; margin-bottom: 48px; opacity: 0; animation: fadeUp .7s ease .4s forwards; }
+  .hero-cta { display: flex; gap: 16px; opacity: 0; animation: fadeUp .7s ease .55s forwards; }
+  .hero-right { display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; }
+  .hero-canvas-wrap { width: 380px; height: 380px; position: relative; opacity: 0; animation: fadeIn 1.2s ease .3s forwards; }
+  .hero-canvas-wrap canvas { width: 100%; height: 100%; }
+  .hero-scroll { position: absolute; bottom: 40px; left: 60px; z-index: 2; font-family: var(--FM); font-size: 9px; letter-spacing: 3px; color: var(--gray-400); text-transform: uppercase; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp .7s ease 1s forwards; }
+  .scroll-bar { width: 36px; height: 1px; background: var(--gray-400); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scaleX(1);}50%{opacity:.3;transform:scaleX(.4);} }
+
+  .specs-strip { background: var(--gray-900); border-top: 1px solid rgba(187,0,0,.15); border-bottom: 1px solid rgba(187,0,0,.15); padding: 0 60px; display: flex; overflow-x: auto; }
+  .spec-item { flex: 1; min-width: 160px; padding: 28px 24px; border-right: 1px solid rgba(255,255,255,.05); }
+  .spec-item:last-child { border-right: none; }
+  .spec-val { font-family: var(--F); font-size: 36px; color: var(--red); line-height: 1; margin-bottom: 4px; }
+  .spec-key { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); }
+
+  .section-label { font-family: var(--FM); font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--red); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .section-label::after { content: ''; width: 40px; height: 1px; background: rgba(187,0,0,.4); display: block; }
+  .section-title { font-family: var(--F); font-size: clamp(42px, 5vw, 70px); line-height: .92; letter-spacing: 1px; margin-bottom: 24px; }
+  .section-title .red { color: var(--red); }
+  .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--red) 30%, var(--red) 70%, transparent); opacity: .18; }
+
+  .service-section { padding: 110px 60px; }
+  .service-section:nth-of-type(odd) { background: var(--gray-900); }
+  .service-section:nth-of-type(even) { background: var(--black); }
+  .service-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .service-layout.reverse { direction: rtl; }
+  .service-layout.reverse > * { direction: ltr; }
+  .service-desc { font-size: 15px; line-height: 1.85; color: var(--gray-200); margin-bottom: 20px; }
+
+  .spec-table { width: 100%; border-collapse: collapse; margin-top: 36px; }
+  .spec-table tr { border-bottom: 1px solid rgba(255,255,255,.05); }
+  .spec-table tr:last-child { border-bottom: none; }
+  .spec-table td { padding: 13px 0; font-size: 13px; }
+  .spec-table td:first-child { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); width: 45%; }
+  .spec-table td:last-child { color: var(--white); font-weight: 400; }
+  .spec-table td:last-child .hi { color: var(--red); font-weight: 500; }
+
+  .photo-gallery { display: flex; flex-direction: column; gap: 14px; }
+  .photo-main { position: relative; overflow: hidden; background: var(--gray-800); border: 1px solid rgba(187,0,0,.15); aspect-ratio: 16/10; }
+  .photo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .photo-thumb { position: relative; overflow: hidden; background: var(--gray-800); border: 1px solid rgba(187,0,0,.1); aspect-ratio: 4/3; }
+  .photo-placeholder { position: absolute; inset: 0; background: var(--gray-700); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background-image: linear-gradient(rgba(187,0,0,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(187,0,0,.04) 1px, transparent 1px); background-size: 18px 18px; }
+  .photo-placeholder svg { opacity: .25; }
+  .photo-placeholder-label { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); text-align: center; padding: 0 20px; }
+  .photo-placeholder-hint { font-size: 11px; color: var(--red); font-family: var(--FM); opacity: .7; }
+  .photo-corner-tl, .photo-corner-br { position: absolute; width: 24px; height: 24px; border-color: var(--red); border-style: solid; border-width: 0; z-index: 1; }
+  .photo-corner-tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+  .photo-corner-br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+  .photo-tag { position: absolute; bottom: 12px; left: 12px; z-index: 2; font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); background: rgba(0,0,0,.7); padding: 5px 10px; }
+
+  .service-cards { display: flex; flex-direction: column; gap: 0; margin-top: 36px; }
+  .svc-row { display: flex; align-items: flex-start; gap: 20px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,.05); cursor: none; transition: padding-left .2s; }
+  .svc-row:last-child { border-bottom: none; }
+  .svc-row:hover { padding-left: 10px; }
+  .svc-num { font-family: var(--F); font-size: 28px; color: var(--red); line-height: 1; flex-shrink: 0; width: 36px; }
+  .svc-title { font-size: 15px; font-weight: 400; margin-bottom: 5px; }
+  .svc-detail { font-size: 12px; color: var(--gray-400); line-height: 1.6; font-family: var(--FM); letter-spacing: .5px; }
+
+  .canvas-deco-wrap { background: var(--gray-800); border: 1px solid rgba(187,0,0,.12); aspect-ratio: 4/3; position: relative; overflow: hidden; }
+  .canvas-deco-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .canvas-label { position: absolute; bottom: 14px; right: 14px; font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(187,0,0,.5); z-index: 2; }
+
+  .mems-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 56px; }
+  .mems-card { background: var(--gray-800); padding: 36px 30px; border-bottom: 2px solid transparent; transition: all .25s; position: relative; overflow: hidden; cursor: none; }
+  .mems-card:hover { border-color: var(--red); background: var(--gray-700); }
+  .mems-card::before { content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px; background: radial-gradient(circle, rgba(187,0,0,.12) 0%, transparent 70%); opacity: 0; transition: opacity .25s; }
+  .mems-card:hover::before { opacity: 1; }
+  .mems-icon { margin-bottom: 22px; }
+  .mems-icon canvas { width: 64px; height: 64px; display: block; }
+  .mems-title { font-family: var(--F); font-size: 28px; letter-spacing: 1px; margin-bottom: 10px; line-height: .95; }
+  .mems-title .red { color: var(--red); }
+  .mems-desc { font-size: 13px; line-height: 1.75; color: var(--gray-200); }
+  .mems-specs { margin-top: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .mems-spec { font-family: var(--FM); font-size: 9px; letter-spacing: 1.5px; color: var(--gray-400); display: flex; align-items: center; gap: 8px; }
+  .mems-spec::before { content: ''; width: 4px; height: 4px; background: var(--red); border-radius: 50%; flex-shrink: 0; }
+
+  .workflow-section { padding: 110px 60px; background: var(--gray-900); }
+  .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 56px; position: relative; }
+  .workflow-steps::before { content: ''; position: absolute; top: 28px; left: 28px; right: 28px; height: 1px; background: linear-gradient(90deg, var(--red), rgba(187,0,0,.2)); z-index: 0; }
+  .wf-step { display: flex; flex-direction: column; align-items: center; padding: 0 16px; position: relative; z-index: 1; cursor: none; }
+  .wf-num { width: 56px; height: 56px; border: 2px solid var(--red); border-radius: 50%; background: var(--gray-900); display: flex; align-items: center; justify-content: center; font-family: var(--FM); font-size: 12px; font-weight: 700; color: var(--red); margin-bottom: 20px; transition: background .2s; flex-shrink: 0; }
+  .wf-step:hover .wf-num { background: var(--red); color: var(--white); }
+  .wf-title { font-family: var(--F); font-size: 18px; letter-spacing: 1px; margin-bottom: 8px; text-align: center; }
+  .wf-desc { font-size: 12px; color: var(--gray-400); text-align: center; line-height: 1.6; font-family: var(--FM); letter-spacing: .5px; }
+
+  .tools-section { padding: 80px 60px; background: var(--black); }
+  .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 48px; }
+  .tool-card { background: var(--gray-800); border: 1px solid rgba(255,255,255,.04); padding: 24px 22px; transition: border-color .2s; cursor: none; }
+  .tool-card:hover { border-color: rgba(187,0,0,.3); }
+  .tool-cat { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+  .tool-name { font-size: 14px; font-weight: 400; color: var(--white); margin-bottom: 4px; }
+  .tool-detail { font-size: 12px; color: var(--gray-400); }
+
+  .cta-section { padding: 80px 60px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(187,0,0,.15); background: var(--gray-900); }
+  .cta-title { font-family: var(--F); font-size: clamp(32px, 4vw, 52px); line-height: .95; margin-bottom: 10px; }
+  .cta-title .red { color: var(--red); }
+  .cta-sub { font-size: 14px; color: var(--gray-200); }
+  .btn { font-family: var(--FM); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: none; padding: 15px 30px; transition: all .2s; display: inline-block; }
+  .btn-red { background: var(--red); color: var(--white); border: 1.5px solid var(--red); clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%); }
+  .btn-red:hover { background: var(--red-bright); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(187,0,0,.3); }
+  .btn-ghost { color: var(--white); border: 1.5px solid rgba(255,255,255,.18); }
+  .btn-ghost:hover { border-color: var(--red); transform: translateY(-2px); }
+
+  footer { background: var(--black); border-top: 1px solid rgba(187,0,0,.15); padding: 44px 60px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-logo img { height: 34px; }
+  .footer-text { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { font-family: var(--FM); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); transition: color .2s; cursor: none; }
+  .footer-links a:hover { color: var(--red); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; } .reveal-delay-2 { transition-delay: .22s; } .reveal-delay-3 { transition-delay: .34s; }
+
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; z-index: 300; background: transparent; border: none; outline: none; }
+  .hamburger span { width: 26px; height: 2px; background: var(--red); transition: all .3s ease; display: block; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-menu { position: fixed; inset: 0; z-index: 250; background: rgba(0,0,0,.97); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 40px; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a { font-family: var(--F); font-size: 52px; letter-spacing: 3px; color: var(--red); transition: color .2s; }
+  .mobile-menu a:hover { color: var(--white); }
+
+  @media (max-width: 1000px) {
+    nav { padding: 18px 24px; } .nav-links { display: none; } .hamburger { display: flex; }
+    .hero { grid-template-columns: 1fr; } .hero-right { display: none; } .hero-left { padding: 120px 24px 80px; }
+    .service-section { padding: 80px 24px; }
+    .service-layout, .service-layout.reverse { grid-template-columns: 1fr; direction: ltr; gap: 48px; }
+    .specs-strip { padding: 0 24px; } .mems-grid { grid-template-columns: 1fr; }
+    .workflow-section { padding: 80px 24px; } .workflow-steps { grid-template-columns: 1fr 1fr; gap: 32px; } .workflow-steps::before { display: none; }
+    .tools-grid { grid-template-columns: 1fr 1fr; }
+    .cta-section { flex-direction: column; gap: 32px; padding: 60px 24px; text-align: center; }
+    footer { flex-direction: column; gap: 20px; padding: 36px 24px; text-align: center; }
+    body { cursor: auto; } #cursor-dot, #cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="../index.html"><img src="../nkam-logo-dark.png" alt="NKAM" class="nav-logo-img"></a>
+  <ul class="nav-links">
+    <li><a href="../de/index.html#about">Über uns</a></li>
+    <li><a href="#">Photonik</a></li>
+    <li><a href="../de/index.html#portfolio">Portfolio</a></li>
+    <li><a href="../de/index.html#team">Team</a></li>
+    <li><a href="../de/philosophie.html">Philosophie</a></li>
+  </ul>
+  <div style="display:flex; gap:12px; font-family:var(--FM); font-size:10px; letter-spacing:2px;">
+    <a href="../photonique.html" style="color:var(--gray-200); transition:color .2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--gray-200)'">FR</a>
+    <span style="color:var(--gray-400);">·</span>
+    <a href="../en/photonique.html" style="color:var(--gray-200); transition:color .2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--gray-200)'">EN</a>
+    <span style="color:var(--gray-400);">·</span>
+    <a href="#" style="color:var(--red);">DE</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../de/index.html#about" onclick="toggleMenu()">Über uns</a>
+  <a href="#" onclick="toggleMenu()">Photonik</a>
+  <a href="../de/index.html#portfolio" onclick="toggleMenu()">Portfolio</a>
+  <a href="../de/index.html#team" onclick="toggleMenu()">Team</a>
+  <a href="../de/philosophie.html" onclick="toggleMenu()">Philosophie</a>
+  <div style="display:flex; gap:16px; font-family:var(--FM); font-size:14px; letter-spacing:3px; margin-top:20px;">
+    <a href="../photonique.html" style="color:var(--gray-200);" onclick="toggleMenu()">FR</a>
+    <span style="color:var(--gray-400);">·</span>
+    <a href="../en/photonique.html" style="color:var(--gray-200);" onclick="toggleMenu()">EN</a>
+    <span style="color:var(--gray-400);">·</span>
+    <a href="#" style="color:var(--red);" onclick="toggleMenu()">DE</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-left">
+    <a href="../de/index.html" class="back-btn">Zurück zur Website</a>
+    <div class="eyebrow">Erweiterte Dienstleistungen</div>
+    <h1 class="hero-title">Photonik<br>&amp; <span class="red">Optomechanik</span></h1>
+    <p class="hero-desc">Beratung, Prototyping und Integration komplexer optischer Systeme. Von der tolerierten optomechanischen Konstruktion bis zur Fertigung photonischer MEMS-Komponenten — NKAM begleitet Ihre Projekte in jeder Phase des Entwicklungszyklus.</p>
+    <div class="hero-cta">
+      <a href="#bancs" class="btn btn-red">Leistungen entdecken</a>
+      <a href="../de/index.html#contact" class="btn btn-ghost">Angebot anfragen</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:16px;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:clamp(28px,3.5vw,48px); letter-spacing:4px; color:#BB0000; text-align:right; opacity:0; animation:fadeUp .7s ease .5s forwards;">WE SHAPE LIGHT</div>
+      <div class="hero-canvas-wrap"><canvas id="hero-canvas" width="380" height="380"></canvas></div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span class="scroll-bar"></span>Erkunden</div>
+</section>
+
+<!-- SPECS STRIP -->
+<div class="specs-strip reveal">
+  <div class="spec-item"><div class="spec-val">λ/20</div><div class="spec-key">Optische Oberflächenpräzision</div></div>
+  <div class="spec-item"><div class="spec-val">sub-μm</div><div class="spec-key">Optomechanische Ausrichtung</div></div>
+  <div class="spec-item"><div class="spec-val">MEMS</div><div class="spec-key">Photonische Mikrosysteme</div></div>
+  <div class="spec-item"><div class="spec-val">CAD</div><div class="spec-key">Monte-Carlo-Toleranzierung</div></div>
+  <div class="spec-item"><div class="spec-val">FEA</div><div class="spec-key">Thermomechanische Analyse</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SERVICE 1 -->
+<section class="service-section" id="bancs">
+  <div class="service-layout">
+    <div>
+      <div class="section-label reveal">Leistung 01</div>
+      <h2 class="section-title reveal reveal-delay-1">Prototyping<br>optischer <span class="red">Bänke</span></h2>
+      <p class="service-desc reveal reveal-delay-2">Konstruktion und Aufbau experimenteller optischer Bänke mit Präzisionsoptiken (asphärische Linsen, Spiegel, Beugungsgitter), Strahllenkungselementen und kohärenten oder inkohärenten Abbildungssystemen.</p>
+      <p class="service-desc reveal reveal-delay-2">Jedes Teilsystem wird unter Berücksichtigung thermomechanischer Ausrichtungsbeschränkungen, Vibrationsstabilität (passive/aktive Isolation) und Kompatibilität mit zugehörigen Messgeräten (Profilometer, Fizeau-Interferometer, Strahlanalysator) konstruiert.</p>
+      <div class="service-cards reveal reveal-delay-2">
+        <div class="svc-row"><div class="svc-num">01</div><div class="svc-content"><div class="svc-title">Konstruktion optomechanischer Halterungen</div><div class="svc-detail">3, 4, 6-DOF-Halterungen · Werkstoffe: Invar, Ti-6Al-4V, Al 7075 · Kryogene Kompatibilität auf Anfrage</div></div></div>
+        <div class="svc-row"><div class="svc-num">02</div><div class="svc-content"><div class="svc-title">Strahlführung und -formung</div><div class="svc-detail">Afokale Teleskope · Beam Expander · Kollimationssysteme · Einzelmoden-/PM-Faserkopplung</div></div></div>
+        <div class="svc-row"><div class="svc-num">03</div><div class="svc-content"><div class="svc-title">Integration und Qualifikation</div><div class="svc-detail">Wellenfrontsensor-Ausrichtung (Shack-Hartmann) · WFE-Messung · Qualifikationsbericht</div></div></div>
+        <div class="svc-row"><div class="svc-num">04</div><div class="svc-content"><div class="svc-title">3D-Druck optischer Strukturen</div><div class="svc-detail">Halterungen, Blenden, Diaphragmen · Kohlenstoffgefüllte opake Werkstoffe · SLA für glatte Oberflächen</div></div></div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="photo-gallery">
+        <div class="photo-main">
+          <div class="photo-placeholder">
+            <img src="../images/bancoptic.webp" alt="Optische Bank" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="photo-tag">Hauptansicht — optische Bank</div>
+        </div>
+        <div class="photo-row">
+          <div class="photo-thumb"><div class="photo-placeholder"><div class="photo-corner-tl"></div><svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="2" stroke="#BB0000" stroke-width="1.5"/><circle cx="24" cy="24" r="8" stroke="#BB0000" stroke-width="1.5"/></svg><div class="photo-placeholder-label">Halterungsdetail</div></div><div class="photo-tag">6-DOF-Halterung</div></div>
+          <div class="photo-thumb"><div class="photo-placeholder"><div class="photo-corner-tl"></div><svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="2" stroke="#BB0000" stroke-width="1.5"/><circle cx="24" cy="24" r="8" stroke="#BB0000" stroke-width="1.5"/></svg><div class="photo-placeholder-label">Strahlprofil</div></div><div class="photo-tag">Strahlanalyse</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICE 2 -->
+<section class="service-section" id="simulation">
+  <div class="service-layout reverse">
+    <div class="reveal">
+      <div class="photo-gallery">
+        <div class="photo-main"><div class="photo-placeholder"><div class="photo-corner-tl"></div><div class="photo-corner-br"></div><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M8 40 L20 20 L28 30 L34 22 L42 40 Z" stroke="#BB0000" stroke-width="1.5" fill="none"/><line x1="8" y1="40" x2="42" y2="40" stroke="#BB0000" stroke-width="1"/><line x1="8" y1="8" x2="8" y2="40" stroke="#BB0000" stroke-width="1"/></svg><div class="photo-placeholder-label">Optische Simulationsaufnahme<br>Zemax / Code V / ANSYS</div><div class="photo-placeholder-hint">← Durch Ihre Aufnahme ersetzen →</div></div><div class="photo-tag">Simulation — Spotdiagramm</div></div>
+        <div class="photo-row">
+          <div class="photo-thumb"><div class="photo-placeholder"><div class="photo-corner-tl"></div><svg width="32" height="32" viewBox="0 0 48 48" fill="none"><path d="M8 40 L20 20 L28 30 L34 22 L42 40 Z" stroke="#BB0000" stroke-width="1.5" fill="none"/><line x1="8" y1="40" x2="42" y2="40" stroke="#BB0000" stroke-width="1"/></svg><div class="photo-placeholder-label">WFE-Fehlerbudget</div></div><div class="photo-tag">WFE-Analyse</div></div>
+          <div class="photo-thumb"><div class="photo-placeholder"><div class="photo-corner-tl"></div><svg width="32" height="32" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="16" stroke="#BB0000" stroke-width="1.5" stroke-dasharray="4,3"/><circle cx="24" cy="24" r="8" stroke="#BB0000" stroke-width="1.5"/></svg><div class="photo-placeholder-label">Monte-Carlo-Ergebnisse</div></div><div class="photo-tag">MC-Verteilung</div></div>
+        </div>
+      </div>
+      <div class="canvas-deco-wrap" style="margin-top:14px;"><canvas id="sim-canvas" width="400" height="200"></canvas><div class="canvas-label">RAYTRACING-SIMULATION — ECHTZEIT</div></div>
+    </div>
+    <div>
+      <div class="section-label reveal">Leistung 02</div>
+      <h2 class="section-title reveal reveal-delay-1">Simulation &amp;<br>optische <span class="red">Toleranzierung</span></h2>
+      <p class="service-desc reveal reveal-delay-2">Vollständige Modellierung optischer Systeme durch Strahlverfolgung (sequenziell und nicht-sequenziell). Wellenfront-Fehlerbudget (WFE-Budget) durch Empfindlichkeitsanalyse mechanischer, thermischer und fertigungsbedingter Parameter.</p>
+      <p class="service-desc reveal reveal-delay-2">Monte-Carlo-Analyse der Fertigungstoleranzen (Neigung, Dezentrierung, Formfehler), Berechnung der Leistungsverteilungen und Definition der in der Produktion erreichbaren Spezifikationen.</p>
+      <table class="spec-table reveal reveal-delay-2">
+        <tr><td>Software</td><td><span class="hi">Zemax OpticStudio</span> · Code V · ANSYS Mechanical</td></tr>
+        <tr><td>Spektralbereiche</td><td>UV (193 nm) → LWIR (14 μm)</td></tr>
+        <tr><td>Toleranzierung</td><td>RSS · Monte-Carlo · <span class="hi">Inverse Empfindlichkeit</span></td></tr>
+        <tr><td>Lieferungen</td><td>WFE-Bericht · Tolerierte Zeichnungen · Optisches Datenblatt</td></tr>
+        <tr><td>Modellierte Effekte</td><td>Doppelbrechung · Streuung · Absorption · Thermoelastik</td></tr>
+        <tr><td>Normen</td><td>ISO 10110 · MIL-PRF-13830 · ECSS-E-HB-10-02A</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICE 3 MEMS -->
+<section class="service-section" id="mems">
+  <div>
+    <div class="section-label reveal">Leistung 03</div>
+    <h2 class="section-title reveal reveal-delay-1">Photonische<br><span class="red">MEMS</span></h2>
+    <p class="service-desc reveal reveal-delay-2" style="max-width:680px;">Konstruktion und Beratung für mikroelektromechanische Systeme (MEMS) mit optischer Funktionalität — verformbare Spiegel, piezoelektrische Aktoren, räumliche Lichtmodulatoren (SLM) und integrierte Fotodetektoren. Mechanisch-optisch-elektronischer Co-Design-Ansatz für kompakte Hochleistungsarchitekturen.</p>
+  </div>
+  <div class="mems-grid">
+    <div class="mems-card reveal">
+      <div class="mems-icon"><canvas id="mems-c1" width="64" height="64"></canvas></div>
+      <div class="mems-title">Verformbare<br><span class="red">Spiegel</span></div>
+      <p class="mems-desc">Konstruktion segmentierter oder kontinuierlicher MEMS-Spiegel zur adaptiven Wellenfrontkorrektur. Elektrostatische / piezoelektrische Aktor-Simulation.</p>
+      <div class="mems-specs">
+        <div class="mems-spec">Aktorhub: 1–50 μm</div>
+        <div class="mems-spec">Bandbreite: bis 10 kHz</div>
+        <div class="mems-spec">Substrate: SOI, SiN, PDMS</div>
+      </div>
+    </div>
+    <div class="mems-card reveal reveal-delay-1">
+      <div class="mems-icon"><canvas id="mems-c2" width="64" height="64"></canvas></div>
+      <div class="mems-title">Räumliche<br><span class="red">Lichtmodulatoren</span></div>
+      <p class="mems-desc">Integration und Charakterisierung von SLM (DMD, LCOS) in Phasen- oder Amplitudensteuerungsarchitekturen. Pixelgenaue Kalibrierung und Nicht-Uniformitätskompensation.</p>
+      <div class="mems-specs">
+        <div class="mems-spec">Phasengenauigkeit: λ/100</div>
+        <div class="mems-spec">Ortsauflösung: &lt; 8 μm/Pixel</div>
+        <div class="mems-spec">Kompatibel: Digitale Holographie</div>
+      </div>
+    </div>
+    <div class="mems-card reveal reveal-delay-2">
+      <div class="mems-icon"><canvas id="mems-c3" width="64" height="64"></canvas></div>
+      <div class="mems-title">Hermetisches<br><span class="red">Packaging</span></div>
+      <p class="mems-desc">Konstruktion hermetischer Gehäuse für photonische MEMS-Komponenten. Faser-/Komponentenausrichtung und entspiegelte optische Fenster.</p>
+      <div class="mems-specs">
+        <div class="mems-spec">Dichtigkeit: He-Leck &lt; 10⁻⁹ mbar·l/s</div>
+        <div class="mems-spec">Temperaturbereich: –55°C bis +125°C</div>
+        <div class="mems-spec">Norm: MIL-STD-883</div>
+      </div>
+    </div>
+  </div>
+  <div class="photo-row" style="margin-top:14px; max-width:100%;">
+    <div class="photo-thumb" style="aspect-ratio:16/7; grid-column:1/-1;">
+      <div class="photo-placeholder">
+        <img src="../images/mems.gif" alt="MEMS-Komponente" style="width:100%; height:100%; object-fit:cover;">
+      </div>
+      <div class="photo-tag">MEMS-Komponente — Mikroskopie</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WORKFLOW -->
+<section class="workflow-section">
+  <div class="section-label reveal">Methodik</div>
+  <h2 class="section-title reveal reveal-delay-1">Vom Konzept zur<br><span class="red">Qualifikation</span></h2>
+  <div class="workflow-steps">
+    <div class="wf-step reveal"><div class="wf-num">01</div><div class="wf-title">Spezifikation</div><div class="wf-desc">Definition des optischen Lastenhefts · Erstes WFE-Budget · Umgebungsbedingungen</div></div>
+    <div class="wf-step reveal reveal-delay-1"><div class="wf-num">02</div><div class="wf-title">Simulation</div><div class="wf-desc">Sequenzielles Raytracing · Optimierung · Empfindlichkeitsanalyse · Monte-Carlo</div></div>
+    <div class="wf-step reveal reveal-delay-2"><div class="wf-num">03</div><div class="wf-title">Optomechanisches CAD</div><div class="wf-desc">3D-Modellierung · GD&T-Toleranzierung · Thermomechanische FEA · Ausrichtungsstudie</div></div>
+    <div class="wf-step reveal reveal-delay-2" style="transition-delay:.46s"><div class="wf-num">04</div><div class="wf-title">Prototyping</div><div class="wf-desc">Additive Fertigung · Präzisionszerspanung Fremdvergabe · Optikintegration</div></div>
+    <div class="wf-step reveal" style="transition-delay:.58s"><div class="wf-num">05</div><div class="wf-title">Qualifikation</div><div class="wf-desc">WFE-Messung · Vibrations-/Schocktest · Qualifikationsbericht · Definitionsakte</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS -->
+<section class="tools-section">
+  <div class="section-label reveal">Technische Umgebung</div>
+  <h2 class="section-title reveal reveal-delay-1">Werkzeuge &amp;<br><span class="red">Software</span></h2>
+  <div class="tools-grid">
+    <div class="tool-card reveal"><div class="tool-cat">Optik</div><div class="tool-name">Zemax OpticStudio</div><div class="tool-detail">Raytracing · Toleranzierung · Physikalische Optik</div></div>
+    <div class="tool-card reveal reveal-delay-1"><div class="tool-cat">Mechanisches CAD</div><div class="tool-name">SolidWorks / Fusion 360</div><div class="tool-detail">Modellierung · Baugruppe · GD&T</div></div>
+    <div class="tool-card reveal reveal-delay-2"><div class="tool-cat">Simulation</div><div class="tool-name">ANSYS Mechanical</div><div class="tool-detail">FEA · Thermoelastik · Modal</div></div>
+    <div class="tool-card reveal"><div class="tool-cat">MEMS</div><div class="tool-name">COMSOL Multiphysics</div><div class="tool-detail">Elektrostatik · Piezo · Fluid</div></div>
+    <div class="tool-card reveal reveal-delay-1"><div class="tool-cat">Additive Fertigung</div><div class="tool-name">FDM / SLA / SLS</div><div class="tool-detail">Optische Strukturen · Blenden · Halterungen</div></div>
+    <div class="tool-card reveal reveal-delay-2"><div class="tool-cat">Metrologie</div><div class="tool-name">Shack-Hartmann · Fizeau</div><div class="tool-detail">WFE-Messung · Profilometrie</div></div>
+    <div class="tool-card reveal"><div class="tool-cat">Scripting</div><div class="tool-name">Python / MATLAB</div><div class="tool-detail">Automatisierung · Nachbearbeitung · Analyse</div></div>
+    <div class="tool-card reveal reveal-delay-1"><div class="tool-cat">Dokumentation</div><div class="tool-name">ISO 10110 · ECSS</div><div class="tool-detail">Optische Zeichnungen · Definitionsakten</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div>
+    <div class="cta-title">Ein photonisches<br><span class="red">Projekt</span>?</div>
+    <div class="cta-sub">Beratung, Prototyping, Toleranzierung — sprechen wir über Ihre Spezifikationen.</div>
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="mailto:contact@nkam-engineering.com?subject=Photonisches Projekt NKAM" class="btn btn-red">Kontakt →</a>
+    <a href="../de/index.html#portfolio" class="btn btn-ghost">Portfolio ansehen</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo"><img src="../nkam-logo-dark.png" alt="NKAM"></div>
+  <div class="footer-text">© 2026 NKAM — Alle Rechte vorbehalten</div>
+  <div class="footer-links">
+    <a href="../de/index.html#about">Über uns</a>
+    <a href="../de/index.html#portfolio">Portfolio</a>
+  </div>
+</footer>
+
+<script>
+const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
+let mx=-200,my=-200,rx=-200,ry=-200;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const R='#BB0000',RF='rgba(187,0,0,0.05)',RD='rgba(187,0,0,0.2)';
+function grid(ctx,W,H){ctx.strokeStyle=RF;ctx.lineWidth=0.5;for(let x=0;x<W;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}}
+(function(){const cv=document.getElementById('hero-canvas');if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;let t=0;const elements=[{type:'lens',x:90,y:H/2,f:80,r:55,label:'L1'},{type:'lens',x:190,y:H/2,f:120,r:65,label:'L2'},{type:'mirror',x:280,y:H/2,label:'M1'},{type:'lens',x:320,y:H/2,f:60,r:45,label:'L3'}];function drawLens(cx,cy,r){ctx.strokeStyle=R;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy-r);ctx.bezierCurveTo(cx+18,cy-r/2,cx+18,cy+r/2,cx,cy+r);ctx.stroke();ctx.beginPath();ctx.moveTo(cx,cy-r);ctx.bezierCurveTo(cx-18,cy-r/2,cx-18,cy+r/2,cx,cy+r);ctx.stroke();}function drawMirror(cx,cy){ctx.strokeStyle=R;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(cx-4,cy-45);ctx.lineTo(cx-4,cy+45);ctx.stroke();ctx.strokeStyle='rgba(187,0,0,0.3)';ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(cx-4,cy-40);ctx.lineTo(cx-4,cy+40);ctx.stroke();}function drawRay(points,alpha,width){if(points.length<2)return;ctx.strokeStyle=`rgba(187,0,0,${alpha})`;ctx.lineWidth=width||1;ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length;i++)ctx.lineTo(points[i].x,points[i].y);ctx.stroke();ctx.strokeStyle=`rgba(255,80,80,${alpha*0.25})`;ctx.lineWidth=(width||1)*3;ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length;i++)ctx.lineTo(points[i].x,points[i].y);ctx.stroke();}function draw(){ctx.clearRect(0,0,W,H);grid(ctx,W,H);ctx.strokeStyle='rgba(187,0,0,0.12)';ctx.lineWidth=1;ctx.setLineDash([6,8]);ctx.beginPath();ctx.moveTo(10,H/2);ctx.lineTo(W-10,H/2);ctx.stroke();ctx.setLineDash([]);const offsets=[-35,0,35];const speed=0.6;offsets.forEach((off,ri)=>{const phase=(t*speed+ri*0.4)%5;const prog=phase;let pts=[];const startX=-20,ey=H/2+off;if(prog<1){pts=[{x:startX,y:ey},{x:startX+prog*(elements[0].x-startX),y:ey}];}else if(prog<2){const p=(prog-1);pts=[{x:startX,y:ey},{x:elements[0].x,y:ey},{x:elements[0].x+(elements[1].x-elements[0].x)*p,y:H/2+(off*(1-p))}];}else if(prog<3){const p=(prog-2);pts=[{x:startX,y:ey},{x:elements[0].x,y:ey},{x:elements[1].x,y:H/2},{x:elements[1].x+(elements[2].x-elements[1].x)*p,y:H/2+(off*p*0.4)}];}else if(prog<4){const p=(prog-3);pts=[{x:startX,y:ey},{x:elements[0].x,y:ey},{x:elements[1].x,y:H/2},{x:elements[2].x,y:H/2+off*0.4},{x:elements[2].x,y:H/2-(off*0.4)*p}];}else{const p=(prog-4);pts=[{x:startX,y:ey},{x:elements[0].x,y:ey},{x:elements[1].x,y:H/2},{x:elements[2].x,y:H/2+off*0.4},{x:elements[2].x,y:H/2-off*0.4},{x:elements[2].x+(W-elements[2].x)*p,y:H/2-off*0.4+off*0.4*p}];}drawRay(pts,0.65-ri*0.05,1.5-ri*0.1);});elements.forEach(el=>{if(el.type==='lens'){drawLens(el.x,el.y,el.r);ctx.strokeStyle='rgba(187,0,0,0.25)';ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.moveTo(el.x+el.f,el.y-8);ctx.lineTo(el.x+el.f,el.y+8);ctx.stroke();ctx.beginPath();ctx.moveTo(el.x-el.f,el.y-8);ctx.lineTo(el.x-el.f,el.y+8);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(187,0,0,0.6)';ctx.font='10px Space Mono,monospace';ctx.textAlign='center';ctx.fillText(el.label,el.x,el.y-el.r-10);}else{drawMirror(el.x,el.y);ctx.fillStyle='rgba(187,0,0,0.6)';ctx.font='10px Space Mono,monospace';ctx.textAlign='center';ctx.fillText(el.label,el.x+14,el.y-52);}});ctx.textAlign='left';ctx.fillStyle='rgba(187,0,0,0.35)';ctx.font='8px Space Mono,monospace';ctx.fillText('QUELLE',8,H/2-10);ctx.fillText('DETEKTOR',W-70,H/2-10);const wfe=Math.sin(t*0.3)*0.015+0.04;ctx.fillStyle='rgba(187,0,0,0.5)';ctx.font='9px Space Mono,monospace';ctx.textAlign='right';ctx.fillText(`WFE: ${wfe.toFixed(3)} λ rms`,W-12,H-24);ctx.fillText('f/# : 4.2',W-12,H-10);ctx.textAlign='left';t+=0.016;requestAnimationFrame(draw);}draw();})();
+(function(){const cv=document.getElementById('sim-canvas');if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;let t=0,active=false;const N=200;const rays=Array.from({length:N},(_,i)=>({r:Math.random()*0.95,th:Math.random()*Math.PI*2,phase:Math.random()*Math.PI*2}));function draw(){ctx.clearRect(0,0,W,H);grid(ctx,W,H);ctx.strokeStyle='rgba(187,0,0,0.1)';ctx.lineWidth=1;ctx.setLineDash([4,6]);ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();ctx.setLineDash([]);const detX=W-60;ctx.strokeStyle='rgba(187,0,0,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(detX,H/2-50);ctx.lineTo(detX,H/2+50);ctx.stroke();const aberr=Math.sin(t*0.4)*0.5+0.5;rays.forEach((ray)=>{const px=ray.r*Math.cos(ray.th);const py=ray.r*Math.sin(ray.th);const sx=detX+px*2*(1+aberr*ray.r*ray.r*2);const sy=H/2+py*3*(1+aberr*ray.r*0.5)+Math.sin(t+ray.phase)*0.3;ctx.fillStyle=`rgba(187,0,0,${0.4+ray.r*0.4})`;ctx.beginPath();ctx.arc(sx,sy,0.8,0,Math.PI*2);ctx.fill();});[0,-30,30,-55,55].forEach((off,i)=>{const srcY=H/2+off;const midX=W/2+(Math.sin(t*0.3+i)*15);const endY=H/2+off*0.15*(1+aberr*0.3);ctx.strokeStyle=`rgba(187,0,0,${0.25-i*0.01})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(10,srcY);ctx.quadraticCurveTo(midX,H/2+(off*0.5),detX,endY);ctx.stroke();});ctx.fillStyle='rgba(187,0,0,0.5)';ctx.font='8px Space Mono,monospace';const rms=(0.04+aberr*0.08).toFixed(3);ctx.fillText(`RMS Spot: ${rms} λ`,10,H-8);ctx.textAlign='right';ctx.fillText(`Airy-Scheibe: 2.44λ/D`,W-10,H-8);ctx.textAlign='left';t+=0.016;requestAnimationFrame(draw);}const io=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!active){active=true;draw();}},{threshold:0.2});io.observe(cv);})();
+function drawMemsIcon(id,type){const cv=document.getElementById(id);if(!cv)return;const ctx=cv.getContext('2d'),W=64,H=64;let t=0;function draw(){ctx.clearRect(0,0,W,H);if(type===1){const deform=Math.sin(t*2)*4;ctx.strokeStyle=R;ctx.lineWidth=1.5;ctx.beginPath();for(let a=0;a<Math.PI*2;a+=0.05){const r=22+deform*Math.sin(a*3+t*3);const x=W/2+Math.cos(a)*r,y=H/2+Math.sin(a)*r;a<0.05?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.closePath();ctx.stroke();ctx.fillStyle='rgba(187,0,0,0.08)';ctx.fill();ctx.fillStyle=R;ctx.beginPath();ctx.arc(W/2,H/2,3,0,Math.PI*2);ctx.fill();}else if(type===2){const g=8,cols=5,rows=5;for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const phase=Math.sin(t*1.5+c*0.8+r*0.6)*0.5+0.5;ctx.fillStyle=`rgba(187,0,0,${0.1+phase*0.6})`;ctx.fillRect(8+c*(g+1),8+r*(g+1),g,g);}}else{ctx.strokeStyle=R;ctx.lineWidth=1.5;ctx.strokeRect(12,14,40,36);ctx.strokeStyle='rgba(187,0,0,0.5)';ctx.lineWidth=1;ctx.strokeRect(20,20,24,20);ctx.strokeStyle=R;ctx.lineWidth=1;const bw=Math.sin(t*2)*2;ctx.beginPath();ctx.moveTo(0,H/2+bw);ctx.lineTo(64,H/2-bw);ctx.stroke();ctx.fillStyle=R;[[12,22],[12,36],[52,22],[52,36]].forEach(([x,y])=>{ctx.fillRect(x-4,y-2,4,4);});}t+=0.025;requestAnimationFrame(draw);}draw();}
+drawMemsIcon('mems-c1',1);drawMemsIcon('mems-c2',2);drawMemsIcon('mems-c3',3);
+document.querySelectorAll('.mems-card,.tool-card,.svc-row').forEach(el=>{el.addEventListener('mouseenter',()=>{ring.style.transform='translate(-50%,-50%) scale(1.6)';ring.style.borderColor=R;});el.addEventListener('mouseleave',()=>{ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(187,0,0,.5)';});});
+function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
+</script>
+</body>
+</html>
