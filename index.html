@@ -293,6 +293,11 @@
       linear-gradient(90deg, rgba(187,0,0,.04) 1px, transparent 1px);
     background-size: 18px 18px;
   }
+  .team-photo img {
+  width: 100%;       /* occupe toute la largeur du conteneur */
+  height: auto;      /* conserve les proportions */
+  object-fit: contain; /* pas de rognage */
+}
   .team-photo svg { width: 70px; height: 70px; opacity: .1; position: relative; z-index: 1; }
   .corner-tl, .corner-br {
     position: absolute; width: 36px; height: 36px;
